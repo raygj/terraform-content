@@ -1,0 +1,58 @@
+import "tfplan"
+
+get_albs = func() {
+    albs = []
+    for tfplan.module_paths as path {
+        albs += values(tfplan.module(path).resources.aws_lb) else []
+    }
+    return albs
+}
+
+application_load_balancers = get_albs()
+
+get_security_group_rules = func() {
+    security_group_rule = []
+    for tfplan.module_paths as path {
+        security_group_rule += values(tfplan.module(path).resources.aws_security_group_rule) else []
+    }
+    return security_group_rule
+}
+
+security_group_rules = get_security_group_rules()
+
+/*check_management_ports = rule {
+  all application_load_balancers as _, albs {
+    all albs as index, r {
+      all security_group_rules as _, sg {
+        all sg as index, s {
+          ((s.applied.security_group_id in r.applied.security_groups) and
+          ((s.applied.from_port is not "22" and s.applied.to_port is not "22") or
+          (s.applied.from_port is not "137" and s.applied.to_port is not "137") or
+          (s.applied.from_port is not "138" and s.applied.to_port is not "138") or
+          (s.applied.from_port is not "139" and s.applied.to_port is not "139"))) else false
+        }
+      }
+    }
+  }
+}*/
+ 
+check_management_ports = rule {
+  all application_load_balancers as _, albs {
+    all albs as _, r {
+      all security_group_rules as _, sgr {
+        all sgr as _, s {
+          # We cannot test if s.applied.security_group_id in r.applied.security_groups
+          # because they are both computed if both being created in single plan
+          #((s.applied.security_group_id not in r.applied.security_groups) or
+          ((22 < int(s.applied.from_port) or int(s.applied.to_port) < 22) and
+           (139 < int(s.applied.from_port) or int(s.applied.to_port) < 137)) else false 
+        }
+      }
+    }
+  }
+}
+
+# Main rule that requires other rules to be true
+main = rule {
+  (check_management_ports) else true
+}

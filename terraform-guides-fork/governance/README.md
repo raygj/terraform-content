@@ -1,0 +1,2 @@
+# Governance with Terraform Sentinel Policies
+Sentinel gives operations teams the governance capabilities they need to ensure that all infrastructure provisioned with Terraform Enterprise complies with their organization's provisioning rules. The files under this directory provide some sample Sentinel policies for several clouds including AWS, Microsoft Azure, Google Cloud Platform (GCP), and VMware. The external directory also includes an example of an external data source and a Sentinel policy which checks the result of that data source.

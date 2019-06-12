@@ -1,0 +1,224 @@
+import "tfplan"
+import "tfconfig"
+import "tfstate"
+import "types"
+import "strings"
+
+get_sgrs_from_plan = func(label) {
+  sgrs = []
+  for tfplan.module_paths as path {
+    append(sgrs, tfplan.module(path).resources.aws_security_group_rule[label])
+  }
+  print("SGRs from plan:", sgrs)
+  return sgrs
+}
+
+get_sgrs_from_state = func() {
+  sgrs = []
+  for tfstate.module_paths as path {
+    append(sgrs, tfstate.module(path).resources.aws_security_group_rule)
+  }
+  #print("SGRs from state:", sgrs)
+  return sgrs
+}
+
+sgrs_from_state = get_sgrs_from_state()
+
+get_sgrs_from_config = func() {
+  sgrs = []
+  for tfconfig.module_paths as path {
+    #print("sgrs in module are:", tfconfig.module(path).resources.aws_security_group_rule)
+    append(sgrs, tfconfig.module(path).resources.aws_security_group_rule)
+  }
+  print("SGRs from config with keys:", sgrs)
+  return sgrs
+}
+
+sgrs_from_config = get_sgrs_from_config()
+
+get_albs_from_plan = func() {
+  albs = []
+  for tfplan.module_paths as path {
+    append(albs, tfplan.module(path).resources.aws_lb)
+  }
+  #print("ALBs from plan:", albs)
+  return albs
+}
+
+albs_from_plan = get_albs_from_plan()
+
+get_albs_from_state = func() {
+  albs = []
+  for tfstate.module_paths as path {
+    append(albs, tfstate.module(path).resources.aws_lb)
+  }
+  #print("ALBs from state:", albs)
+  return albs
+}
+
+albs_from_state = get_albs_from_state()
+
+get_albs_from_config = func() {
+  albs = []
+  for tfconfig.module_paths as path {
+    append(albs, tfconfig.module(path).resources.aws_lb)
+  }
+  print("ALBs from config:", albs)
+  return albs
+}
+
+albs_from_config = get_albs_from_config()
+
+get_sg_ids_used_in_albs = func() {
+  sg_identifiers = []
+  for albs_from_config as alb_map {
+    for alb_map as alb_label, alb_config_map {
+      #print("alb label is:", alb_label)
+      alb_config = alb_config_map.config
+      #print("alb config is:", alb_config)
+      if "security_groups" in keys(alb_config) {
+        security_groups = alb_config.security_groups
+        print("security_groups for ALB is:", security_groups)
+        for security_groups as sg {
+          if sg matches "\\$\\{var\\.(.*)\\}" {
+            # sg is a variable
+            print("sg is a variable with the id of an sg")
+            sg_var = strings.trim_suffix(strings.trim_prefix(sg, "${var."), "}")
+            print("the variable is:", sg_var)
+            print("the id of the sg in the variable is:", tfplan.variables[sg_var])
+            sg_value = tfplan.variables[sg_var]
+            append(sg_identifiers, {"alb_label": alb_label, "sg_ref": sg_value})
+          } else if sg matches "\\$\\{data\\.aws_security_group\\.(.*)\\.id\\}" {
+            # sg is the id of an aws_security_group data source
+            print("sg is the id of an aws_security_group data source")
+            # For now, we just use the code representing the id attribute of the SG data source
+            print("the code representing the id of the sg is:", sg)
+            append(sg_identifiers, {"alb_label": alb_label, "sg_ref": sg})
+          } else if sg matches "\\$\\{data\\.terraform_remote_state\\.(.*)\\}" {
+            # sg is the id of a security group from a terraform_remote_state data source
+            print("sg is the id of a sg from a terraform_remote_state data source")
+            # For now, we just use the code representing the terraform_remote_state data source
+            print("the code representing the id of the sg is:", sg)
+            append(sg_identifiers, {"alb_label": alb_label, "sg_ref": sg})
+          } else if sg matches "\\$\\{aws_security_group\\.(.*)\\.id\\}" {
+            # sg is is the id of a security group from an aws_security_group resource
+            print("sg is the id of an aws_security_group resource")
+            # We again take the code representing the id attribute of the SG resource
+            print("the code representing the id of the sg is:", sg)
+            append(sg_identifiers, {"alb_label": alb_label, "sg_ref": sg})
+          } else if sg matches "\\$\\{module(.*)\\}" {
+            # sg is is the id of a security group from the output of a module
+            print("sg is the id of an output from a module")
+            # We again take the code representing the id attribute of the SG resource
+            print("the code representing the id of the sg is:", sg)
+            append(sg_identifiers, {"alb_label": alb_label, "sg_ref": sg})
+          } else {
+            # sg is a hard-coded security group ID
+            print("sg is a hard-coded security group id")
+            append(sg_identifiers, {"alb_label": alb_label, "sg_ref": sg})
+          }
+        }
+      }
+    }
+  }
+  return sg_identifiers
+}
+
+get_sg_ids_used_in_sgrs = func() {
+  sg_identifiers = []
+  for sgrs_from_config as sgr_map {
+    for sgr_map as sgr_label, sgr_config_map {
+      print("sgr label is:", sgr_label)
+      sgr_config = sgr_config_map.config
+      print("sgr config is:", sgr_config)
+      if "security_group_id" in keys(sgr_config) {
+        sg = sgr_config.security_group_id
+        print("security_group_id for SG is:", sg)
+        if sg matches "\\$\\{var\\.(.*)\\}" {
+          # sg is a variable
+          print("sg is a variable with the id of an sg")
+          sg_var = strings.trim_suffix(strings.trim_prefix(sg, "${var."), "}")
+          print("the variable is:", sg_var)
+          print("the id of the sg in the variable is:", tfplan.variables[sg_var])
+          sg_value = tfplan.variables[sg_var]
+          append(sg_identifiers, {"sg_label": sgr_label, "sg_ref" : sg_value})
+        } else if sg matches "\\$\\{data\\.aws_security_group\\.(.*)\\.id\\}" {
+          # sg is the id of an aws_security_group data source
+          print("sg is the id of an aws_security_group data source")
+          # For now, we just use the code representing the id attribute of the SG data source
+          print("the code representing the id of the sg is:", sg)
+          append(sg_identifiers, {"sg_label": sgr_label, "sg_ref" : sg})
+        } else if sg matches "\\$\\{data\\.terraform_remote_state\\.(.*)\\}" {
+          # sg is the id of a security group from a terraform_remote_state data source
+          print("sg is the id of an sg from a terraform_remote_state data source")
+          # For now, we just use the code representing the id attribute of the SG data source
+          print("the code representing the id of the sg is:", sg)
+          append(sg_identifiers, {"sg_label": sgr_label, "sg_ref" : sg})
+        } else if sg matches "\\$\\{aws_security_group\\.(.*)\\.id\\}" {
+          # sg is is the id of a security group from an aws_security_group resource
+          print("sg is the id of an aws_security_group resource")
+          # We again take the code representing the id attribute of the SG resource
+          print("the code representing the id of the sg is:", sg)
+          append(sg_identifiers, {"sg_label": sgr_label, "sg_ref" : sg})
+        } else if sg matches "\\$\\{module(.*)\\}" {
+          # sg is is the id of a security group from the output of a module
+          print("sg is the id of an output from a module")
+          # We again take the code representing the id attribute of the SG resource
+          print("the code representing the id of the sg is:", sg)
+          append(sg_identifiers, {"sg_label": sgr_label, "sg_ref": sg})
+        } else {
+          # sg is a hard-coded security group ID
+          print("sg is a hard-coded security group id")
+          append(sg_identifiers, {"sg_label": sgr_label, "sg_ref" : sg})
+        }
+      }
+    }
+  }
+  return sg_identifiers
+}
+
+determine_sgr_labels_to_restrict = func() {
+  sgr_labels_to_restrict = []
+  sg_ids_used_in_albs = get_sg_ids_used_in_albs()
+  print("Security Group IDs used in ALBs are:", sg_ids_used_in_albs)
+  alb_sg_refs = []
+  for sg_ids_used_in_albs as alb_map {
+    append(alb_sg_refs, alb_map["sg_ref"])
+  }
+  sg_ids_used_in_sgrs = get_sg_ids_used_in_sgrs()
+  print("Security Group IDs used in SGRs are:", sg_ids_used_in_sgrs)
+  for sg_ids_used_in_sgrs as sg_id {
+    if sg_id["sg_ref"] in alb_sg_refs {
+      append(sgr_labels_to_restrict, sg_id["sg_label"])
+    }
+  }
+  print("sgr_labels_to_restrict:", sgr_labels_to_restrict)
+  return (sgr_labels_to_restrict)
+}
+
+sgr_labels_to_restrict = determine_sgr_labels_to_restrict()
+print( "SGR labels to restrict:", sgr_labels_to_restrict)
+
+determine_sgrs_to_restrict = func() {
+  sgrs_to_restrict = []
+  for sgr_labels_to_restrict as sgr_label {
+    append( sgrs_to_restrict, get_sgrs_from_plan(sgr_label) )
+  }
+  return sgrs_to_restrict
+}
+
+sgrs_to_restrict = determine_sgrs_to_restrict()
+
+check_management_ports = rule {
+  all sgrs_to_restrict as _, sgr {
+    all sgr as _, s {
+      (print("sgr to restrict in check_management_ports:", s) or
+      ((22 < int(s.applied.from_port) or int(s.applied.to_port) < 22) and
+      (139 < int(s.applied.from_port) or int(s.applied.to_port) < 137))) else false
+    }
+  }
+}
+
+main = rule {
+  (check_management_ports) else true
+}

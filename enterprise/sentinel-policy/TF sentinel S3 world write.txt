@@ -1,0 +1,34 @@
+import "tfplan"
+import "json"
+
+# Get all S3 buckets from all modules
+get_s3_buckets = func() {
+    buckets = []
+    for tfplan.module_paths as path {
+        buckets += values(tfplan.module(path).resources.aws_s3_bucket) else []
+    }
+    return buckets
+}
+
+s3_buckets = get_s3_buckets()
+
+# Rule to restrict S3 bucket ACLs
+all_grantees_resources = func() {
+  	grantees = []
+    for s3_buckets as _, instances {
+      all instances as index, r {
+         grantees+= json.unmarshal(r.applied.Grants)
+      }
+    }
+}
+
+check_grants = func() {
+  for all_grantees_resources as g {
+	return (g not contains ((g.uri = 'http://acs.amazonaws.com/groups/global/AllUsers') and ((g.permission = 'FULL_CONTROL') or (g.permission = 'WRITE'))))
+	}
+  }
+
+# Main rule that requires other rules to be true
+main = rule {
+  (check_grants)
+}

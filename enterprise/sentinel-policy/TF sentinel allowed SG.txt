@@ -1,0 +1,37 @@
+# we are checking the security group ID’s for our AWS instances. 
+# we are looping over each of the security groups and verifying 
+# that they are contained in the ‘allowed_sgs’ list.
+#
+#
+import "tfplan"
+
+# Get all AWS instances from all modules
+get_aws_instances = func() {
+instances = []
+for tfplan.module_paths as path {
+instances += values(tfplan.module(path).resources.aws_instance) else []
+}
+return instances
+}
+
+allowed_sgs = [
+"jray-demo-sg",
+]
+
+aws_instances = get_aws_instances()
+
+# Rule to restrict instance types
+sg_allowed = rule {
+all aws_instances as _, instances {
+all instances as index, r {
+all r.applied.vpc_security_group_ids as sg {
+sg in allowed_sgs
+}
+}
+}
+}
+
+# Main rule that requires other rules to be true
+main = rule {
+(sg_allowed) else true
+}
