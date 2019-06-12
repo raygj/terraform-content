@@ -1,0 +1,66 @@
++# Guy Barros: https://gist.github.com/GuyBarros/c0e7f618ff7c0434b11f8ad3ac627926
+pipeline {
+    
+    agent any
+
+    environment {
+        GIT_REPO = "https://github.com/GuyBarros/terraform-azurerm-demostack"
+        TFE_NAME = "app.terraform.io"
+        TFE_URL = "https://app.terraform.io"
+        TFE_ORGANIZATION = "emea-se-playground"
+        TFE_API_URL = "${TFE_URL}/api/v2"
+        TFE_API_TOKEN = credentials("tfe_api_token")
+    }
+
+    stages {
+        stage('Preparation') {
+            steps {
+                git "${GIT_REPO}"
+                sh "ls"
+                sh '''
+                  curl -o tf.zip https://releases.hashicorp.com/terraform/0.11.11/terraform_0.11.11_linux_amd64.zip ; yes | unzip tf.zip
+                    ./terraform version
+                '''
+            }
+        }
+        stage('TFE Workstation list ') {
+            steps {
+                sh '''
+                  curl \
+                    --silent --show-error --fail \
+                    --header "Authorization: Bearer $TFE_API_TOKEN" \
+                    --header "Content-Type: application/vnd.api+json" \
+                    ${TFE_API_URL}/organizations/${TFE_ORGANIZATION}/workspaces \
+                    | jq -r \'.data[] | .attributes.name\'
+                '''
+            }
+        }
+        stage('TFE Set-up') {
+            steps{
+                sh '''
+                     tee ~/.terraformrc > /dev/null <<EOF
+                     credentials "${TFE_NAME}" {
+                        token        = "${TFE_API_TOKEN}"
+                     }
+EOF
+                '''
+            }
+        }
+        stage('Terraform Init') {
+            steps {
+                sh "cat ~/.terraformrc"
+                sh "./terraform init"
+            }
+        }
+        stage('Terraform Plan') {
+            steps {
+                sh "./terraform plan"
+            }
+        }
+        stage('Terraform Apply') {
+            steps {
+                sh "./terraform apply -auto-approve"
+            }
+        }
+    }
+}
