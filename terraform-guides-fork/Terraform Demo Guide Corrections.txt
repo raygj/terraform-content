@@ -1,8 +1,0 @@
-terraform-guides/infrastructure-as-code/aws-ec2-instance/variables.tf
-
-line 7: updated to Ubuntu 18.04
-line 8: updated AMI to ami-063aa838bd7631e0b
-
-terraform-guides/infrastructure-as-code/aws-ec2-instance/main.tf
-
-line 12: updated AZ suffix from "a" to "b"

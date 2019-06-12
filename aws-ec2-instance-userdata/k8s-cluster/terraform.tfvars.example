@@ -1,5 +1,0 @@
-owner = "email@example.com"
-key_name = "mykey"
-security_group_ingress = ["1.1.1.1/32"]
-aws_region = "us-east-2"
-environment = "dev"
