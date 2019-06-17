@@ -1,21 +1,18 @@
-provider "aws" {
-  region = "${var.aws_region}"
+terraform {
+  required_version = ">= 0.11.13"
 }
 
-resource "aws_instance" "jenkins" {
-  count         = "${var.count}"
-  ami           = "${var.ami_id}"
-  instance_type = "${var.instance_type}"
+provider "aws" {
+  region = "us-east-1"
+}
+
+resource "aws_instance" "jray-demo-ec2-restrict-test" {
+  ami           = "ami-b374d5a5"
+  instance_type = "t2.small"
 
   tags {
-    Name  = "${var.name}-${count.index}"
-    owner = "${var.owner}"
-    TTL   = "${var.ttl}"
+    Name  = "jray-demo-ec2-restrict-test"
+    owner = "jray@hashicorp.com"
+    ttl   = "2"
   }
-
-  user_data = "${var.user_data}"
-  key_name  = "${var.key_name}"
-  subnet_id = "${var.subnet_id}"
-
-  vpc_security_group_ids = "${var.security_group_id}"
 }
