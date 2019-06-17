@@ -3,10 +3,10 @@ pipeline {
     agent any
 
     environment {
-        GIT_REPO = "https://github.com/raygj/test-jenkins"
-        TFE_NAME = "jray-ptfe.hashidemos.io"
-        TFE_URL = "https://jray-ptfe.hashidemos.io"
-        TFE_ORGANIZATION = "GLIC"
+        GIT_REPO = "https://github.com/<user>/<repo>"
+        TFE_NAME = "<URL less https>"
+        TFE_URL = "https://<URL>"
+        TFE_ORGANIZATION = "<org>"
         TFE_API_URL = "${TFE_URL}/api/v2"
         TFE_API_TOKEN = credentials("tfe_api_token")
     }
