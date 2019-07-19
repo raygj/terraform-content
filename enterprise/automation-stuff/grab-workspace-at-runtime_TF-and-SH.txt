@@ -1,0 +1,33 @@
+// TF code and script to extract the workspace name at runtime
+// <assumes something like SNOW integration that creates dynamic workspace name>
+// from there you can use the workspace name to feed an env var
+// that can be consumed by another script or API calls to TFE
+
+
+// this is the TF code
+
+resource "null_resource" "jq" {
+  provisioner "local-exec" {
+    command = <<EOH
+sudo apt-get update
+sudo apt-get install jq --yes
+EOH
+  }
+}
+
+# Run helper script to slurp up environment variables
+data "external" "grab_vars" {
+  depends_on = ["null_resource.jq"]
+  program = ["bash","grab_vars.sh" ]
+}
+
+output "test" {
+  value =  "${data.external.grab_vars.result.workspace_name}"
+}
+
+
+
+// this is the a separate script that will grab vars to be fed back into TF code
+
+#!/usr/bin/env bash
+jq -Rn "{"workspace_name": \"$ATLAS_WORKSPACE_NAME\"}"
