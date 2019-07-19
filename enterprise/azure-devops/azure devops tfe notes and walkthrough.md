@@ -71,7 +71,8 @@ https://visualstudio.com/jray0964
 
 - create a workspace (configure it for API access, do not use a VCS connection)
 *note* you can automate the creation of workspaces with the desired settings and proper variables using scripts from this [repo](https://github.com/hashicorp/terraform-guides/tree/master/operations)
-- apply any Sentinel policiies
+- suggest enabling auto apply on the workspace
+- apply any Sentinel policies
 - create a user or team API token that will be used in the pipeline
 
 ## Build a Pipeline
@@ -82,8 +83,41 @@ Pipelines > New Pipeline > Use Classic Editor
 
 #### Azure Repos Git
 
+##### Setup Repo
+
+Select *Repos* from within your Azure DevOps Project
+
+1. push or import code
+1. to import, select _Import_
+1. select the source (Git) and clone URL (for instance, URL of an existing GitHub repo)
+1. if this is a private repo, select _Requires Authorization_ otherwise just click _Import_
+	1. select _import_
+	1. enter username and password, then select _Import_
+
+Now, configure pipeline:
+
+1. for the _Select a Source_ step, use the default _Azure Repos Git_
+1. select Team Project, Repository, and Default Branch...then continue
+1. choose a dev framework template or select _start with empty job_
+1. select _Agent Job 1_, then the "+" sign to add a task
+1. in the search field, type in _terraform enterprise_
+1. select Terraform Enterprise API Integration, then _add_
+1. click on Terraform Enterprise Integration agent to configure settings
+1. enter Terraform Enterprise details such as:
+
+- Access Token (user or team token with rights to execute runs)
+- Workspace Name
+- Organization Name
+- Terraform Variable Inputs
+- Template Directory (points to dir in repo with TF code
+
+*note* for Template Directory: TF code cannot exist in root of repo.
+
+There is an example [here](https://github.com/hashicorp/azure-devops-tfe-marketplace-task/blob/master/apioperations/images/configuration.jpg)
+
 #### GitHub
 
+1. for the _Select a Source_ step, click on GitHub
 1. provide name for connection
 1. click on _Authorize Using OAUTH_ button
 1. enter GitHub info (if it is not pulled automatically from an active session)
@@ -101,9 +135,18 @@ Pipelines > New Pipeline > Use Classic Editor
 - Workspace Name
 - Organization Name
 - Terraform Variable Inputs
-- Template Directory
+- Template Directory (points to dir in repo with TF code
 
-*note* template directory is dir within your repo. select the ... elipses to browse your repo. or jump out to the repo and create a dir.
+*note* for Template Directory: TF code cannot exist in root of repo.
 
 There is an example [here](https://github.com/hashicorp/azure-devops-tfe-marketplace-task/blob/master/apioperations/images/configuration.jpg)
+
+### Run Pipeline
+
+- once you've completed the previous step to setup pipeline based on your VCS, click _Save & Queue_ from the top menu
+- click _Save * Queue_ again
+- enter save comment
+- click _Save and Run_
+- assuming all settings are correct and your workspace has been provisioned properly the job will run and execute the TF run
+
 
