@@ -49,7 +49,7 @@ https://visualstudio.com/jray0964
 
 `tfx login -u <ServiceURL> -t <PersonalAccessToken>`
 
-*note* this command may return _error: TypeError: Cannot read property 'success' of undefined_ it means your service URL is incorrect
+**note** this command may return _error: TypeError: Cannot read property 'success' of undefined_ it means your service URL is incorrect
 
 ### Step 6: Upload Task Code
 
@@ -59,7 +59,7 @@ https://visualstudio.com/jray0964
 
 `tfx build tasks upload --task-path ./apioperations`
 
-*note* if you logged in successfully you should not be prompted for your service URL or PAT
+**note** if you logged in successfully you should not be prompted for your service URL or PAT
 
 ### Step 7: Verify Code Loaded
 
@@ -70,7 +70,7 @@ https://visualstudio.com/jray0964
 ## Terraform Enteprise Prep
 
 - create a workspace (configure it for API access, do not use a VCS connection)
-*note* you can automate the creation of workspaces with the desired settings and proper variables using scripts from this [repo](https://github.com/hashicorp/terraform-guides/tree/master/operations)
+**note** you can automate the creation of workspaces with the desired settings and proper variables using scripts from this [repo](https://github.com/hashicorp/terraform-guides/tree/master/operations)
 - suggest enabling auto apply on the workspace
 - apply any Sentinel policies
 - create a user or team API token that will be used in the pipeline
@@ -111,7 +111,7 @@ Now, configure pipeline:
 - Terraform Variable Inputs
 - Template Directory (points to dir in repo with TF code
 
-*note* for Template Directory: TF code cannot exist in root of repo.
+**note** for Template Directory: TF code cannot exist in root of repo.
 
 There is an example [here](https://github.com/hashicorp/azure-devops-tfe-marketplace-task/blob/master/apioperations/images/configuration.jpg)
 
@@ -137,7 +137,7 @@ There is an example [here](https://github.com/hashicorp/azure-devops-tfe-marketp
 - Terraform Variable Inputs
 - Template Directory (points to dir in repo with TF code
 
-*note* for Template Directory: TF code cannot exist in root of repo.
+**note** for Template Directory: TF code cannot exist in root of repo.
 
 There is an example [here](https://github.com/hashicorp/azure-devops-tfe-marketplace-task/blob/master/apioperations/images/configuration.jpg)
 
