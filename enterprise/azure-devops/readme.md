@@ -95,11 +95,12 @@ Confirm you have an entry for _friendly name : Terraform Enterprise API Integrat
 
 **note** you can automate the creation of workspaces with the desired settings and proper variables using scripts from this [repo](https://github.com/hashicorp/terraform-guides/tree/master/operations)
 
-- suggest enabling auto apply on the workspace
-- apply any Sentinel policies
-- create a user or team API token that will be used in the pipeline
+- suggest enabling auto apply on the workspace, here's an example:
 
 ![Sample Workspace Setup](/enterprise/azure-devops/apioperations/images/tfe_workspace_setup.jpg)
+
+- apply any Sentinel policies
+- create a user or team API token that will be used in the pipeline
 
 ## Step 6 - (optional) Setup Azure Repos Git
 
@@ -114,7 +115,7 @@ Select *Repos* from within your Azure DevOps Project
 	1. select _import_
 	1. enter username and password, then select _Import_
 	
-**note** Terraform codes should not be in the root of the repo, but should be staged in a sub directory. In this example `/provision` which matches the directory you will specify when configuring the Terraform Enterprise Task within your pipeline.
+**note** Terraform codes should not be in the root of the repo, but should be staged in a sub directory. In this example `/provision` which matches the directory you will specify when configuring the Terraform Enterprise Task within your pipeline. Here's an example:
 
 ![Sample Repo Setup](/enterprise/azure-devops/apioperations/images/azure_repo_tf.jpg)
 
@@ -148,7 +149,7 @@ Follow either Azure Repo or GitHub Repo Steps based on your source repo:
 
 **note** for Template Directory: TF code cannot exist in root of repo.
 
-Here is an example ![Configuration](/enterprise/azure-devops/apioperations/images/configuration.jpg)
+Here is an example: ![Configuration](/enterprise/azure-devops/apioperations/images/configuration.jpg)
 
 #### GitHub Repo
 
@@ -175,7 +176,7 @@ Here is an example ![Configuration](/enterprise/azure-devops/apioperations/image
 
 **note** for Template Directory: TF code cannot exist in root of repo.
 
-Here is an example ![Configuration](/enterprise/azure-devops/apioperations/images/configuration.jpg)
+Here is an example: ![Configuration](/enterprise/azure-devops/apioperations/images/configuration.jpg)
 
 ## Step 8 - Run Pipeline
 
@@ -187,6 +188,10 @@ Here is an example ![Configuration](/enterprise/azure-devops/apioperations/image
 
 ## Successful Run Notifications
 
+From Azure DevOps:
+
 ![Azure DevOps](/enterprise/azure-devops/apioperations/images/pipeline_success_ado.jpg)
+
+From Terraform Enterprise Workspace:
 
 ![Terraform Enterprise](/enterprise/azure-devops/apioperations/images/pipeline_success_tfe.jpg)
