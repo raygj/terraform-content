@@ -99,7 +99,7 @@ Confirm you have an entry for _friendly name : Terraform Enterprise API Integrat
 - apply any Sentinel policies
 - create a user or team API token that will be used in the pipeline
 
-![Sample Workspace Setup](/apioperations/images/tfe_workspace_setup.jpg)
+![Sample Workspace Setup](/enterprise/azure-devops/apioperations/images/tfe_workspace_setup.jpg)
 
 ## Step 6 - (optional) Setup Azure Repos Git
 
@@ -116,7 +116,7 @@ Select *Repos* from within your Azure DevOps Project
 	
 **note** Terraform codes should not be in the root of the repo, but should be staged in a sub directory. In this example `/provision` which matches the directory you will specify when configuring the Terraform Enterprise Task within your pipeline.
 
-![Sample Repo Setup](/apioperations/images/azure_repo_tf.jpg)
+![Sample Repo Setup](/enterprise/azure-devops/apioperations/images/azure_repo_tf.jpg)
 
 
 ## Step 7 - Create a build pipeline
@@ -135,7 +135,7 @@ Follow either Azure Repo or GitHub Repo Steps based on your source repo:
 1. choose a dev framework template or select _start with empty job_
 1. select _Agent Job 1_, then the "+" sign to add a task
 1. in the search field, type in _terraform enterprise_
-![screenshot](/apioperations/images/marketplace.jpg)
+![screenshot](/enterprise/azure-devops/apioperations/images/marketplace.jpg)
 1. select Terraform Enterprise API Integration, then _add_
 1. click on Terraform Enterprise Integration agent to configure settings
 1. enter Terraform Enterprise details such as:
@@ -148,7 +148,7 @@ Follow either Azure Repo or GitHub Repo Steps based on your source repo:
 
 **note** for Template Directory: TF code cannot exist in root of repo.
 
-Here is an example ![Configuration](/apioperations/images/configuration.jpg)
+Here is an example ![Configuration](/enterprise/azure-devops/apioperations/images/configuration.jpg)
 
 #### GitHub Repo
 
@@ -162,7 +162,7 @@ Here is an example ![Configuration](/apioperations/images/configuration.jpg)
 1. choose a dev framework template or select _start with empty job_
 1. select _Agent Job 1_, then the "+" sign to add a task
 1. in the search field, type in _terraform enterprise_
-![screenshot](/apioperations/images/marketplace.jpg)
+![screenshot](/enterprise/azure-devops/apioperations/images/marketplace.jpg)
 1. select Terraform Enterprise API Integration, then _add_
 1. click on Terraform Enterprise Integration agent to configure settings
 1. enter Terraform Enterprise details such as:
@@ -175,7 +175,7 @@ Here is an example ![Configuration](/apioperations/images/configuration.jpg)
 
 **note** for Template Directory: TF code cannot exist in root of repo.
 
-Here is an example ![Configuration](/apioperations/images/configuration.jpg)
+Here is an example ![Configuration](/enterprise/azure-devops/apioperations/images/configuration.jpg)
 
 ## Step 8 - Run Pipeline
 
@@ -187,6 +187,6 @@ Here is an example ![Configuration](/apioperations/images/configuration.jpg)
 
 ## Successful Run Notifications
 
-![Azure DevOps](/apioperations/images/pipeline_success_ado.jpg)
+![Azure DevOps](/enterprise/azure-devops/apioperations/images/pipeline_success_ado.jpg)
 
-![Terraform Enterprise](/apioperations/images/pipeline_success_tfe.jpg)
+![Terraform Enterprise](/enterprise/azure-devops/apioperations/images/pipeline_success_tfe.jpg)
