@@ -93,7 +93,7 @@ Confirm you have an entry for _friendly name : Terraform Enterprise API Integrat
 
 ## Step 5 - Terraform Enteprise Prep
 
-- create a workspace (configure it for API access, do not use a VCS connection)
+- create a [workspace](https://www.terraform.io/docs/enterprise/getting-started/workspaces.html) (configure it for API access, do not use a VCS connection)
 
 **note** you can automate the creation of workspaces with the desired settings and proper variables using scripts from this [repo](https://github.com/hashicorp/terraform-guides/tree/master/operations)
 
