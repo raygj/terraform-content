@@ -52,11 +52,13 @@ To login using the command-line tool you will need the following:
 
 Other examples of valid URLs are:
 
+```
+https://dev.azure.com/DefaultCollection
+
 https://marketplace.visualstudio.com
 
 https://youraccount.visualstudio.com/DefaultCollection
-
-https://dev.azure.com/DefaultCollection
+```
 
 ##### Login
 
