@@ -149,7 +149,7 @@ Follow either Azure Repo or GitHub Repo Steps based on your source repo:
 
 **note** for Template Directory: TF code cannot exist in root of repo.
 
-Here is an example: ![Configuration](/enterprise/azure-devops/apioperations/images/configuration.jpg)
+Here is an example configuration with notes: ![Configuration](/enterprise/azure-devops/apioperations/images/configuration.jpg)
 
 #### GitHub Repo
 
@@ -176,7 +176,7 @@ Here is an example: ![Configuration](/enterprise/azure-devops/apioperations/imag
 
 **note** for Template Directory: TF code cannot exist in root of repo.
 
-Here is an example: ![Configuration](/enterprise/azure-devops/apioperations/images/configuration.jpg)
+Here is an example configuration with notes: ![Configuration](/enterprise/azure-devops/apioperations/images/configuration.jpg)
 
 ## Step 8 - Run Pipeline
 
