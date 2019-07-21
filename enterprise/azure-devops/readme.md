@@ -95,7 +95,7 @@ Confirm you have an entry for _friendly name : Terraform Enterprise API Integrat
 
 **note** you can automate the creation of workspaces with the desired settings and proper variables using scripts from this [repo](https://github.com/hashicorp/terraform-guides/tree/master/operations)
 
-- suggest enabling auto apply on the workspace, here's an example:
+- suggest enabling auto apply on the workspace, here's an example of a workspace configuration:
 
 ![Sample Workspace Setup](/enterprise/azure-devops/apioperations/images/tfe_workspace_setup.jpg)
 
