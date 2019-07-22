@@ -2,6 +2,8 @@
 
 ## Terraform OSS
 
+For TF OSS it's best to use AZ CLI to authenticate. That said, best practice is to create a dedicated Service Principal to be used by Terraform rather than using the creds of a human.
+
 ### Local Workstation Prep
 
 - Mac: install AZ CLI using [homebrew](https://docs.brew.sh/Installation.html)
@@ -24,9 +26,11 @@
 
 `az account show -o table`
 
+## Create Dedicated Service Principal
+
 - create [service principal](https://docs.microsoft.com/en-us/cli/azure/create-an-azure-service-principal-azure-cli?view=azure-cli-latest) with lease privilege for Terraform
 
-`az ad sp create-for-rbac --role="Contributor" --scopes="/subscriptions/<>" --name http://SomethingTfeCred`
+`az ad sp create-for-rbac --role="Contributor" --scopes="/subscriptions/<subscript ID>" --name http://SomethingTfeCred`
 
 - returns results:
 
@@ -39,6 +43,10 @@
   "tenant": "<>"
 }
 ```
+
+_remember these credentials are used to create resources in Azure and should be treated like a secret_
+
+## Terraform Enterprise
 
 - Service Principal to ENV VAR mapping
 
