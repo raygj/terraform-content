@@ -3,3 +3,6 @@
 #
 git secrets --install -f
 git secrets --register-aws
+
+# run manual scan against /GitHub
+git secrets --scan -r /Users/jray/Documents/GitHub/
