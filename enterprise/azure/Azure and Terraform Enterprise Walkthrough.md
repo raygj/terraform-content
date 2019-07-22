@@ -33,8 +33,8 @@
 ```
 {
   "appId": "<>",
-  "displayName": "JrayTfeCred",
-  "name": "http://JrayTfeCred",
+  "displayName": "SomethingTfeCred",
+  "name": "http://SomethingTfeCred",
   "password": "<>",
   "tenant": "<>"
 }
