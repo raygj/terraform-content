@@ -26,7 +26,7 @@
 
 - create [service principal](https://docs.microsoft.com/en-us/cli/azure/create-an-azure-service-principal-azure-cli?view=azure-cli-latest) with lease privilege for Terraform
 
-`az ad sp create-for-rbac --role="Contributor" --scopes="/subscriptions/14692f20-9428-451b-8298-102ed4e39c2a" --name http://JrayTfeCred`
+`az ad sp create-for-rbac --role="Contributor" --scopes="/subscriptions/<>" --name http://SomethingTfeCred`
 
 - returns results:
 
