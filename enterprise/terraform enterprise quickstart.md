@@ -86,6 +86,7 @@ terraform {
   }
 }
 
+
 ## Execute Code
 
 From the directory that contains your Terraform code and backend.tf file, issue a `terraform init` and then normal `terraform plan/apply/destroy` commands. You can jump to the Terraform Enterprise UI and locate the workspace you are executing code against to see the run status. The run status will also update locally in the CLI.
