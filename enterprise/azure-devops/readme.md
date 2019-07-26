@@ -144,6 +144,8 @@ Follow either Azure Repo or GitHub Repo Steps based on your source repo:
 1. enter Terraform Enterprise details such as:
 
 - Access Token (user or team token with rights to execute runs)
+	- this can be set as a variable in the format `$(TFE_TOKEN)`
+	- then, write the variable under the **Variable** tab as TFE_TOKEN, <your token>, check the "lock" to mark this is a secure variable
 - Workspace Name
 - Organization Name
 - Terraform Variable Inputs
@@ -170,7 +172,9 @@ Here is an example configuration with notes: ![Configuration](/enterprise/azure-
 1. click on Terraform Enterprise Integration agent to configure settings
 1. enter Terraform Enterprise details such as:
 
-- Access Token
+- Access Token (user or team token with rights to execute runs)
+	- this can be set as a variable in the format `$(TFE_TOKEN)`
+	- then, write the variable under the **Variable** tab as TFE_TOKEN, <your token>, check the "lock" to mark this is a secure variable
 - Workspace Name
 - Organization Name
 - Terraform Variable Inputs
