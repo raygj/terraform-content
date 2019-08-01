@@ -1,3 +1,4 @@
+```
              H        H
           HHHH        HHH
       HHHHHHHH        HHHHH
@@ -19,16 +20,21 @@
            HHH        HHHH
              H       
 
+```
 # TFE API driven workflow - the Automater - used to demo CI/CD interaction with TFE via APIs
-# source Roger Berlind
-# https://github.com/hashicorp/terraform-guides/tree/master/operations/automation-script
-#
-# ubuntu host with jenkins installed
-# requires Python2 (non-default for Ubuntu 18.04
-- sudo apt install python-minimal -y
-- python --version
+source [Hashi Guides Roger Berlind](https://github.com/hashicorp/terraform-guides/tree/master/operations/automation-script
+
+# Environment 
+- ubuntu host with jenkins installed
+- requires Python2 (non-default for Ubuntu 18.04
+- 
+`sudo apt install python-minimal -y`
+
+`python --version`
 
 # test case info and mapping of test case-workspace-repo
+
+```
 PoV Test Case			Description
 test-case-1				Jenkins API-driven run
 test-case-2				PMR *non-functional test case
@@ -38,11 +44,13 @@ test-case-5				Sentinel SG by tfconfig enforcement based on CIDR blocks matching
 test-case-6				Sentinel SG by tfplan enforcement based on allowed CIDR blocks grouped by application
 
 PoV Test Case			TFE org/workspace			Git Repo
-test-case-1				GLIC/test-case-1		raygj/test-case-1
-test-case-3				GLIC/test-case-3		raygj/test-case-3
-test-case-4				GLIC/test-case-4		raygj/test-case-4
-test-case-5				GLIC/test-case-5		raygj/test-case-5
-test-case-6				GLIC/test-case-6		raygj/test-case-6
+test-case-1				example/test-case-1		raygj/test-case-1
+test-case-3				example/test-case-3		raygj/test-case-3
+test-case-4				example/test-case-4		raygj/test-case-4
+test-case-5				example/test-case-5		raygj/test-case-5
+test-case-6				example/test-case-6		raygj/test-case-6
+```
+
 
 #Workflow
 create test case code in repo
@@ -52,20 +60,25 @@ automator interacts with TFE via API
 
 # set environment
 ## create directory structure for test cases
+
+```
 mkdir ~/tfe/test-case-1
 mkdir ~/tfe/test-case-3
 mkdir ~/tfe/test-case-4
 mkdir ~/tfe/test-case-5
 mkdir ~/tfe/test-case-6
+```
 
 ## clone automation script for source, copy to each test case dir
 
+```
 git clone https://github.com/hashicorp/terraform-guides.git ~/tfe/git-orig
 cp -r ~/tfe/git-orig/operations/ ~/tfe/test-case-1/
 cp -r ~/tfe/git-orig/operations/ ~/tfe/test-case-3/
 cp -r ~/tfe/git-orig/operations/ ~/tfe/test-case-4/
 cp -r ~/tfe/git-orig/operations/ ~/tfe/test-case-5/
 cp -r ~/tfe/git-orig/operations/ ~/tfe/test-case-6/
+```
 
 # create Git repo for TF code for each test case
 ## use GUI, make repos private
@@ -103,7 +116,7 @@ cp ~/tfe/test-case-1/operations/automation-script/loadAndRunWorkspace.sh ~/tfe/t
 nano ~/tfe/test-case-1/operations/automation-script/loadAndRunWorkspace.sh
 
 address="jray-ptfe.hashidemos.io"
-organization="GLIC"
+organization="example"
 workspace="test-case-6"
 
 ## export TFE org token as ATLAS_TOKEN
@@ -121,7 +134,7 @@ https://www.terraform.io/docs/backends/types/remote.html
 https://www.terraform.io/docs/commands/cli-config.html#credentials
 
 
-nano Users/jray/Documents/GitHub/test-case-1/glic.terraform.rc
+nano Users/jray/Documents/GitHub/test-case-1/example.terraform.rc
 
 credentials "jray-ptfe.hashidemos.io" {
   token = "xxx.atlasv1.zzz"
