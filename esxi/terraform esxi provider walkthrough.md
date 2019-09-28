@@ -5,22 +5,24 @@
 # Components
 - HP z220 workstation with Xeon 3.4GHz | 24 GB RAM | 232GB SSD and 300GB SATA
 - VMware ESXi 6.7 (or better, freeware license)
-	- Existing VMs with VMware-Tools or Open-VM-Tools installed as source for cloning operation
-- 
-Mac with Terraform OSS 11.14 binary and terraform set in the user path
-
+- Existing VMs with VMware-Tools or Open-VM-Tools installed as source for cloning operation
+- Mac with Terraform OSS 11.14 binary and terraform set in the user path
 
 # Terraform ESXi Provider
+
 https://github.com/josenk/terraform-provider-esxi
+
 - Community provider, recently updated for TF 0.12 with a large number of resources
 
 # Walkthrough
 
 ## Download VMware OVF tool
+
 https://my.vmware.com/group/vmware/details?downloadGroup=OVFTOOL430&productId=742
 
 - run Mac installer
 - test install
+
 `ovftool --help`
 
 ***NOTE** _if help output does not display, you need to set the path to the ovftool_
@@ -45,14 +47,17 @@ exit status 127
 ```
 
 ## Install go
+
 `brew install go`
 
 ### Set go path
+
 `nano ~/.bash_profile`
 
 `export GOPATH=$HOME/go`
 
 ## Clone repo
+
 `git clone https://github.com/josenk/terraform-provider-esxi.git $GOPATH/src/github.com/terraform-providers/terraform-provider-esxi`
 
 ## Compile Provider
@@ -93,6 +98,7 @@ https://github.com/golang/go/blob/master/src/go/build/syslist.go
 `* provider.esxi: fork/exec /Users/jray/hashi/terraform/esxi-sandbox/terraform-provider-esxi_v1.4.3: exec format error`
 
 ## Create main.tf for test run
+
 - There are many resource options, this is a basic config
 - Note that the `nic_type` value should match your ESXi installation
 
@@ -152,4 +158,4 @@ exit status 1
 # Next Steps
 - Create vanilla VMs for Ubuntu and CentOS that can be used as source templates
 - Use Packer to create custom VMs that can be used as source templates
-- Play with 
+- Play 
