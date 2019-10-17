@@ -1,0 +1,35 @@
+# no-hazardous-asteroids-today.sentinel enforces that no
+# "potentially hazardous" asteroids are approaching their
+# closest point to Earth within 1,000,000 miles today. Because if
+# there's a potentially hazardous asteroid reaching within a
+# million miles o' here, we're way too nervous and distracted to
+# be changing our infrastructure right now!
+
+import "http"
+import "strings"
+import "time"
+
+year = string(time.now.year)
+month = string(time.now.month)
+day = string(time.now.day) 
+today = strings.join([year, month, day], "-")
+
+base_url = "https://api.nasa.gov/neo/rest/v1/feed?"
+start_query = "start_date=" + today
+api_query = "&api_token=" + api_token
+full_url = base_url + start_query + api_query
+
+no_close_hazardous_asteroids = func(asteroids) {
+  return all asteroids as asteroid {
+    asteroid["is_potentially_hazardous_asteroid"] is false or
+      float(asteroid["miss_distance"]["miles"]) > 1000000
+  }
+}
+
+response = http.get(full_url)
+
+main = rule {
+  no_close_hazardous_asteroids(
+    json.unmarshal(response.body)["near_earth_objects"][today],
+  )
+}

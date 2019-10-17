@@ -1,10 +1,10 @@
 variable "ami_id" {
-  default     = "ami-00c5e3f4a8dd369e8"  #16.04 LTS ubuntu xenial us-east-2
+  default = "ami-00c5e3f4a8dd369e8" #16.04 LTS ubuntu xenial us-east-2
 }
 
 variable cluster_size {
   description = "Qty of K8s nodes to provision"
-  default = 3
+  default     = 3
 }
 
 variable "aws_region" {
@@ -30,7 +30,7 @@ variable "docker_version" {
 
 variable "security_group_ingress" {
   description = "Ingress CIDR to allow SSH and Hashistack access. Warning: setting 0.0.0.0/0 is a bad idea as this deployment does not use TLS."
-  type = "list"
+  type        = "list"
 }
 
 variable "environment" {
@@ -53,11 +53,10 @@ variable "public_subnet_2_block" {
 # Note: enabling this will require CLOUDFLARE_EMAIL and CLOUDFLARE_TOKEN
 variable "create_cloudflare_dns" {
   description = "If set to 1, attempts to create a CNAME record with server public DNS"
-  default = "0"
+  default     = "0"
 }
 
 variable "cloudflare_domain" {
   description = "If create_cloudflare_dns is set to 1, then set the root domain appropriately"
-  default = "example.com"
+  default     = "example.com"
 }
-  

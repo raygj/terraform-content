@@ -117,6 +117,7 @@ resource "aws_security_group_rule" "ingress_allow_consul_vault" {
   cidr_blocks       = "${var.security_group_ingress}"
   security_group_id = "${aws_security_group.mvd-sg.id}"
 }
+
 resource "aws_security_group_rule" "ingress_allow_all_from_whitelist" {
   type              = "ingress"
   from_port         = 0

@@ -1,7 +1,5 @@
 # Add the server record to domain
-resource "random_pet" "server" {
-
-}
+resource "random_pet" "server" {}
 
 resource "cloudflare_record" "vault_server" {
   count  = "${var.create_cloudflare_dns}"

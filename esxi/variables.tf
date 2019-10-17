@@ -4,7 +4,7 @@ variable "guest_name" {
 
 variable "disk_store" {
   description = "SSD or SATA"
-  default = "SSD"
+  default     = "SSD"
 }
 
 variable "memsize" {
@@ -17,5 +17,5 @@ variable "guest_number" {
 
 variable "os" {
   description = "centos or ubuntu, used to pick template"
-  default = "ubuntu"
+  default     = "ubuntu"
 }

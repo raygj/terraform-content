@@ -46,11 +46,11 @@ variable security_group_id {
 }
 
 variable "sg_ids" {
-  type = "list"
+  type    = "list"
   default = ["sg-08dc78d1f405f6f4d"]
 }
 
 variable "vpc_id" {
   description = "existing VPC to deploy resources into"
-  default = "vpc-0a8898bdcbdde208f"
+  default     = "vpc-0a8898bdcbdde208f"
 }

@@ -2,7 +2,7 @@ provider "esxi" {
   esxi_hostname = "192.168.1.228"
   esxi_hostport = "22"
   esxi_username = "root"
-  esxi_password = "<password>" //look into pulling this from a var
+  esxi_password = "<password>"    //look into pulling this from a var
 }
 
 resource "esxi_guest" "homelab" {
@@ -22,15 +22,13 @@ resource "esxi_guest" "homelab" {
   network_interfaces = [
     {
       virtual_network = "VM Network"
-      nic_type    = "vmxnet3"
+      nic_type        = "vmxnet3"
     },
   ]
-
-provisioner "file" {
+  provisioner "file" {
     source      = "/templates/hashistack_setup.sh"
     destination = "/tmp/hashistack_setup.sh"
   }
-
   provisioner "remote-exec" {
     inline = [
       "chmod +x /tmp/hashistack_setup.sh",

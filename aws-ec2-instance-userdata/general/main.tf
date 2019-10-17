@@ -3,9 +3,9 @@ provider "aws" {
 }
 
 resource "aws_instance" "jray_jenkins" {
-  vpc_id            = "sg-08dc78d1f405f6f4d"
-  ami               = "ami-0600ae90df54755e1"
-  instance_type     = "t2.micro"
+  vpc_id        = "sg-08dc78d1f405f6f4d"
+  ami           = "ami-0600ae90df54755e1"
+  instance_type = "t2.micro"
 
   tags {
     Name  = "jray_jenkins"

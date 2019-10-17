@@ -9,7 +9,7 @@ resource "cloudflare_record" "k8s-master" {
 }
 
 resource "cloudflare_record" "k8s-workers" {
-  count = "${var.create_cloudflare_dns == "0" ? 0 : var.cluster_size - 1}"
+  count  = "${var.create_cloudflare_dns == "0" ? 0 : var.cluster_size - 1}"
   count  = "${var.create_cloudflare_dns}"
   domain = "${var.cloudflare_domain}"
   name   = "k8s-${count.index+1}"
