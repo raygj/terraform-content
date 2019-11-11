@@ -1,2 +1,2 @@
 # tfe-jenkins
-_Walkthrough of Jenkins, API-driven, Terraform Enterprise pipeline_
+_Walkthrough of Jenkins, CLI-driven workflow, Terraform Enterprise pipeline_
