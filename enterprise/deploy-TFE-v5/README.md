@@ -92,6 +92,9 @@ Two stages will be used to deploy TFE because there are dependencies that must b
 
 **main.tf**
 
+
+```
+
 provider "aws" {
   region = "us-east-2"
 }
@@ -118,3 +121,6 @@ output "tfe-beta" {
     ssh_private_key              = module.tfe-cluster.ssh_private_key
   }
 }
+
+```
+
