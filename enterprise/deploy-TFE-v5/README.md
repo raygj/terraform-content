@@ -68,7 +68,7 @@ Two stages will be used to deploy TFE because there are dependencies that must b
 - set `cidr_block` to a valid CIDR block
 - set `subnet_count` to the number of subnets you want in your VPC
 
-[screenshot!](/images/tfe-v5-terraform-vars.png)
+![screenshot](/images/tfe-v5-terraform-vars.png)
 
 
 1. Run `terraform init` to initialize the Stage 1 Terraform configuration and download providers.
