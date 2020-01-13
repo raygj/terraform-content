@@ -59,7 +59,9 @@ Two stages will be used to deploy TFE because there are dependencies that must b
 
 1. create a TFC workspace called `tfe_deploy-stage1-demo-us-east`
 
-![screenshot](/images/tfe-v5-deploy-stage1-workspace.png)
+- update VCS connection settings to the location of this forked repo, for example, my workspace is mounted at the repo path `https://github.com/raygj/terraform-content` and the working directory of the workspace is `/enterprise/deploy-TFE-v5/stage1`
+
+![screenshot](/images/tfe-v5-deploy-stage1-workspace2.png)
 
 **note** make sure your AMI value in Stage 2 matches an available AMI in your default region
 
