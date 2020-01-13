@@ -8,7 +8,7 @@ resource "aws_kms_key" "s3" {
 }
 
 resource "aws_kms_alias" "s3" {
-  name = "alias/${var.namespace}-s3-key"
+  name          = "alias/${var.namespace}-s3-key"
   target_key_id = "${aws_kms_key.s3.key_id}"
 }
 

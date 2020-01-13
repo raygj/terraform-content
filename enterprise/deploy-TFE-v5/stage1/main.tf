@@ -42,13 +42,13 @@ resource "aws_route_table" "main" {
 
 locals {
   segmented_cidr = "${split("/", var.cidr_block)}"
-  address = "${split(".", local.segmented_cidr[0])}"
-  bits = "${local.segmented_cidr[1]}"
+  address        = "${split(".", local.segmented_cidr[0])}"
+  bits           = "${local.segmented_cidr[1]}"
 }
 
 resource "aws_subnet" "main" {
   count             = "${var.subnet_count}"
-  cidr_block = "${format("%s.%s.%d.%s/%d", local.address[0], local.address[1], count.index+1, local.address[3], local.bits + (32 - local.bits) / 2)}"
+  cidr_block        = "${format("%s.%s.%d.%s/%d", local.address[0], local.address[1], count.index + 1, local.address[3], local.bits + (32 - local.bits) / 2)}"
   vpc_id            = "${aws_vpc.main.id}"
   availability_zone = "${element(data.aws_availability_zones.available.names, count.index % 2)}"
 
