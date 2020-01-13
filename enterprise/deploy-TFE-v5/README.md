@@ -79,14 +79,13 @@ Two stages will be used to deploy TFE because there are dependencies that must b
 ![screenshot](/images/tfe-v5-terraform-vars2.png)
 
 
-1. Run `terraform init` to initialize the Stage 1 Terraform configuration and download providers.
-1. Run `terraform apply` to provision the Stage 1 resources. Type "yes" when prompted. The apply takes about 1 minute.
-1. Note the `kms_id`, `security_group_id`, `subnet_ids`, and `vpc_id` outputs which you will need in Stage 2. (When creating a private network, you will have `private_subnet_ids` and `public_subnet_ids` outputs instead of the `subnet_ids` output.)
-1. Run `cd ..` to go back to the examples/aws directory.
-1. Add your PTFE license file to your PTFE source bucket that was created. You can do this in the AWS Console.
+4. run `queue plan` to initialize the Stage 1 Terraform configuration and download providers.
+5. troubleshoot any TF errors, if successful you will receive feedback from TF `Plan: 11 to add, 0 to change, 0 to destory.`
+6. hit `confirm & apply` to provision the Stage 1 resources.
+7. note the `kms_id`, `security_group_id`, `subnet_ids`, and `vpc_id` outputs which you will need in Stage 2.
+8. add your PTFE license file to your PTFE source bucket that was created. You can do this in the AWS Console.
 
 **note** all of subnets will be public unless you modify the CIDR blocks for the security group configuration of `resource "aws_security_group"` in the `...deploy-TFE-v5/stage1/main.tf` config
-
 
 #### Terraform Code: Stage 2
 
