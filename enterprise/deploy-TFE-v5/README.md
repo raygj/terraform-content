@@ -54,21 +54,27 @@ Two stages will be used to deploy TFE because there are dependencies that must b
 * A Certificate available in ACM for the hostname provided (or a wildcard certificate for the domain)
 * A license file provided by your Technical Account Manager
 
-- using Roger's code for a "public network" deployment forked into this repo to create the VPC, subnets, other network resources, security group, KMS key, and TFE source bucket (where TFE license file will reside)
+- using Roger Berlind's code for a "public network" deployment forked into this repo to create the VPC, subnets, other network resources, security group, KMS key, and TFE source bucket (where TFE license file will reside)
 
 
-1. create a TFC workspace called `tfe_deploy-stage1-demo-us-east` with secure variables for `AWS_ACCESS_KEY_ID=<your_aws_key>`, `AWS_SECRET_ACCESS_KEY=<your_aws_secret_key>`, and `AWS_DEFAULT_REGION=us-east-1`
+1. create a TFC workspace called `tfe_deploy-stage1-demo-us-east`
+
+![screenshot](/images/tfe-v5-deploy-stage1-workspace.png)
 
 **note** make sure your AMI value in Stage 2 matches an available AMI in your default region
 
-2. using `...deploy-TFE-v5/stage1/network.auto.tfvars` as a reference, configure Terraform Variables for the workspace
+2. using `...deploy-TFE-v5/stage1/network.tfvars` as a reference, configure Terraform Variables for the workspace as follows:
 
 - set `namespace` to "<name>-tfe-v5" where "<name>" is some suitable prefix for your TFE deployment
 - set `bucket_name` to the name of the TFE source bucket you wish to create
 - set `cidr_block` to a valid CIDR block
 - set `subnet_count` to the number of subnets you want in your VPC
 
-![screenshot](/images/tfe-v5-terraform-vars.png)
+3. set secure variables for `AWS_ACCESS_KEY_ID=<your_aws_key>` and `AWS_SECRET_ACCESS_KEY=<your_aws_secret_key>`
+
+- example:
+
+![screenshot](/images/tfe-v5-terraform-vars2.png)
 
 
 1. Run `terraform init` to initialize the Stage 1 Terraform configuration and download providers.
