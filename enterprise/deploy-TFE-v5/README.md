@@ -4,7 +4,9 @@ The goal of this walkthrough is step through the process of deploying TFE v5 clu
 
 **NOTE** when referring to published guides or docs, these will be labeled as "official" versus docs that were created by HashiCorp field SEs that may not be officially supported by HashiCorp Support.
 
-## Official Pre-Install Checklist
+## References
+
+### Official Pre-Install Checklist
 
 https://www.terraform.io/docs/enterprise/before-installing/index.html
 
@@ -14,7 +16,7 @@ https://www.terraform.io/docs/enterprise/before-installing/index.html
 4. Data Storage: data storage service **S3**
 5. Linux Instance: **Linux machine image** (for clustering v5) or versus a running Linux instance (if deploying individual v4)
 
-## Deploying a TFE Cluster
+### Deploying a TFE Cluster
 
 https://www.terraform.io/docs/enterprise/install/cluster-aws.html
 
@@ -24,9 +26,13 @@ https://www.terraform.io/docs/enterprise/install/cluster-aws.html
 4. Write a Terraform configuration that calls the deployment module.
 5. Apply the configuration to deploy the cluster.
 
+### Roger Berlind's TFE v4 Code
+
+https://github.com/rberlind/private-terraform-enterprise/tree/automated-aws-pes-installation
+
 ## Prepare TFC
 
-### Publish the TFE Module in the PMR
+### Publish the TFE Module in your PMR
 
 - fork the HashiCorp Official Module to your private GitHub account
 
@@ -34,13 +40,13 @@ https://github.com/hashicorp/terraform-aws-terraform-enterprise
 
 - publish the module in your PMR
 
-#### Create
+### Deploy TFE
 
-### Terraform Module
+Two stages will be used to deploy TFE because there are dependencies that must be fed into the official module and separating into two steps allows the TFE instance to be deployed into existing infrastructure and/or repaved with ease.
 
 #### Prerequisites: Stage 1
 
-These resources (and a valid license file) are required, but not included in the sample TF code:
+- these resources (and a valid license file) are required as input
 
 * VPC
 * Subnets (both public and private) spread across multiple AZs
@@ -48,35 +54,36 @@ These resources (and a valid license file) are required, but not included in the
 * A Certificate available in ACM for the hostname provided (or a wildcard certificate for the domain)
 * A license file provided by your Technical Account Manager
 
-Use Roger Berlind's TFE v4 Stage 1 code from [THIS REPO](https://github.com/rberlind/private-terraform-enterprise/tree/automated-aws-pes-installation)
-
-1. On your local computer, navigate to a directory such as `GitHub/tfe` into which you want to clone this repository.
-2. Run `git clone https://github.com/hashicorp/private-terraform-enterprise.git` to clone the repository.
-3. Run `cd private-terraform-enterprise` to navigate into the cloned repository.
-4. Run `git checkout automated-aws-pes-installation` (to switch to the automated-aws-pes-installation branch).
+- using Roger's code for a "public network" deployment forked into this repo to create the VPC, subnets, other network resources, security group, KMS key, and TFE source bucket (where TFE license file will reside)
 
 
-Use the Terraform code in either the examples/aws/network-public or the examples/aws/network-private directory to create the VPC, subnets, other network resources, security group, KMS key, and PTFE source bucket, then follow these steps. Otherwise, create the equivalent resources using some other method and then skip to Stage 2.
+1. create a TFC workspace called `tfe_deploy-stage1-demo-us-east` with secure variables for `AWS_ACCESS_KEY_ID=<your_aws_key>`, `AWS_SECRET_ACCESS_KEY=<your_aws_secret_key>`, and `AWS_DEFAULT_REGION=us-east-1`
 
-1. Run `cd examples/aws/network-public` or `cd examples/aws/network-private`to navigate to one of the network directories that contains the Stage 1 Terraform code.
-1. Run `cp network.auto.tfvars.example network.auto.tfvars` to create your own tfvars file.
-1. Edit network.auto.tfvars, set namespace to "<name>-ptfe" where "<name>" is some suitable prefix for your PTFE deployment, set `bucket_name` to the name of the PTFE source bucket you wish to create, set `cidr_block` to a valid CIDR block, and set `subnet_count` to the number of subnets you want in your VPC. When creating a public network, all of the subnets will be public. When creating a private network, that number of private subnets will be created along with two public subnets to allow outbound internet access and for use with the ALB. If creating a private network, also set `ssh_key_name` to the name of your SSH key pair so it can be used with the bastion host created in the private network. Finally, save the file.
-1. Run `AWS_ACCESS_KEY_ID=<your_aws_key>`.
-1. Run `export AWS_SECRET_ACCESS_KEY=<your_aws_secret_key>`.
-1. Run `export AWS_DEFAULT_REGION=us-east-1` or pick some other region.  But if you select a different region, make sure you select AMIs from that region.
+**note** make sure your AMI value in Stage 2 matches an available AMI in your default region
+
+2. using `...deploy-TFE-v5/stage1/network.auto.tfvars` as a reference, configure Terraform Variables for the workspace
+
+- set `namespace` to "<name>-tfe-v5" where "<name>" is some suitable prefix for your TFE deployment
+- set `bucket_name` to the name of the TFE source bucket you wish to create
+- set `cidr_block` to a valid CIDR block
+- set `subnet_count` to the number of subnets you want in your VPC
+
+[screenshot!](/images/tfe-v5-terraform-vars.png)
+
+
 1. Run `terraform init` to initialize the Stage 1 Terraform configuration and download providers.
 1. Run `terraform apply` to provision the Stage 1 resources. Type "yes" when prompted. The apply takes about 1 minute.
 1. Note the `kms_id`, `security_group_id`, `subnet_ids`, and `vpc_id` outputs which you will need in Stage 2. (When creating a private network, you will have `private_subnet_ids` and `public_subnet_ids` outputs instead of the `subnet_ids` output.)
 1. Run `cd ..` to go back to the examples/aws directory.
-1. Add your PTFE license file to your PTFE source bucket that was created. You can do this in the AWS Console
+1. Add your PTFE license file to your PTFE source bucket that was created. You can do this in the AWS Console.
+
+**note** all of subnets will be public unless you modify the CIDR blocks for the security group configuration of `resource "aws_security_group"` in the `...deploy-TFE-v5/stage1/main.tf` config
 
 
+#### Terraform Code: Stage 2
 
 
-
-
-
-#### main.tf
+**main.tf**
 
 provider "aws" {
   region = "us-east-2"
