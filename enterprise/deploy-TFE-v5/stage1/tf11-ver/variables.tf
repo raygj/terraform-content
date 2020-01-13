@@ -19,4 +19,3 @@ variable "subnet_count" {
   description = "number of subnets to create"
   default     = "2"
 }
-
