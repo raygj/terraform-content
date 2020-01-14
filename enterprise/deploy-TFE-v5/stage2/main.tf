@@ -7,7 +7,7 @@ module "terraform-enterprise" {
   version = "0.1.2"
 }
 
-vpc_id       = "data.terraform_remote_state.vpc.outputs.vpc_id"
+vpc_id = data.terraform_remote_state.vpc.outputs.vpc_id
 domain       = "example.com"
 license_file = "company.rli"
 
@@ -22,22 +22,4 @@ output "deploy-tfe" { # need to update output name - check downstream dependenci
     primary_public_ip            = "${module.tfe-cluster.primary_public_ip}"
     ssh_private_key              = "${module.tfe-cluster.ssh_private_key}"
   }
-}
-
-# gather infra values from Stage 1 state stored in TFC
-
-data "terraform_remote_state" "vpc" {
-  backend = "remote"
-
-  config {
-    organization = "${var.org-name}"
-    workspaces = {
-      name = "${var.tfe-deploy-workspace-name}"
-    }
-  }
-}
-
-# Terraform >= 0.12
-resource "aws_vpc" "foo" {
-  vpc_id = data.terraform_remote_state.vpc.outputs.vpc_id
 }
