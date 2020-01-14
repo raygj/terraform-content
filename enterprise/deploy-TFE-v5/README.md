@@ -42,11 +42,11 @@ https://github.com/hashicorp/terraform-aws-terraform-enterprise
 
 - publish the module in your PMR
 
-### Deploy TFE
+## Deploy TFE
 
 Two stages will be used to deploy TFE because there are dependencies that must be fed into the official module and separating into two steps allows the TFE instance to be deployed into existing infrastructure and/or repaved with ease.
 
-#### Prerequisites: Stage 1
+### Prerequisites: Stage 1
 
 - these resources (and a valid license file) are required as input
 
@@ -91,16 +91,47 @@ Two stages will be used to deploy TFE because there are dependencies that must b
 
 **note** all of subnets will be public unless you modify the CIDR blocks for the security group configuration of `resource "aws_security_group"` in the `...deploy-TFE-v5/stage1/main.tf` config
 
-#### Terraform Code: Stage 2
+### Terraform Code: Stage 2
 
+- goal is to use remote state to access Stage 1 workspace to collect the VPC ID and other resources as needed
 
-**main.tf**
+https://www.terraform.io/docs/providers/terraform/index.html
+
+https://www.terraform.io/docs/cloud/run/index.html#cross-workspace-state-access
+
+example
+
+```
+
+# Shared infrastructure state stored in Atlas
+data "terraform_remote_state" "vpc" {
+  backend = "remote"
+
+  config {
+    organization = "hashicorp"
+    workspaces = {
+      name = "vpc-prod"
+    }
+  }
+}
+
+# Terraform >= 0.12
+resource "aws_instance" "foo" {
+  # ...
+  subnet_id = data.terraform_remote_state.vpc.outputs.subnet_id
+}
+
+```
+
+#### main.tf
+
+**WIP note** need to make sure all this code is TF 0.12 compliant
 
 
 ```
 
 provider "aws" {
-  region = "us-east-2"
+  region = "${var.aws_region}"
 }
 
 module "terraform-enterprise" {
@@ -108,23 +139,41 @@ module "terraform-enterprise" {
   version = "0.1.2"
 }
 
-  vpc_id       = "vpc-123456789abcd1234"
-  domain       = "example.com"
-  license_file = "company.rli"
-}
+vpc_id       = "data.terraform_remote_state.vpc.outputs.vpc_id"
+domain       = "example.com"
+license_file = "company.rli"
 
-output "tfe-beta" {
+output "deploy-tfe" { # need to update output name - check downstream dependencies
   value = {
-    application_endpoint         = module.tfe-cluster.application_endpoint
-    application_health_check     = module.tfe-cluster.application_health_check
-    iam_role                     = module.tfe-cluster.iam_role
-    install_id                   = module.tfe-cluster.install_id
-    installer_dashboard_password = module.tfe-cluster.installer_dashboard_password
-    installer_dashboard_url      = module.tfe-cluster.installer_dashboard_url
-    primary_public_ip            = module.tfe-cluster.primary_public_ip
-    ssh_private_key              = module.tfe-cluster.ssh_private_key
+    application_endpoint         = "${module.tfe-cluster.application_endpoint}"
+    application_health_check     = "${module.tfe-cluster.application_health_check}"
+    iam_role                     = "${module.tfe-cluster.iam_role}"
+    install_id                   = "${module.tfe-cluster.install_id}"
+    installer_dashboard_password = "${module.tfe-cluster.installer_dashboard_password}"
+    installer_dashboard_url      = "${module.tfe-cluster.installer_dashboard_url}"
+    primary_public_ip            = "${module.tfe-cluster.primary_public_ip}"
+    ssh_private_key              = "${module.tfe-cluster.ssh_private_key}"
   }
 }
+
+# gather infra values from Stage 1 state stored in TFC
+
+data "terraform_remote_state" "vpc" {
+  backend = "remote"
+
+  config {
+    organization = "${var.org-name}"
+    workspaces = {
+      name = "${var.tfe-deploy-workspace-name}"
+    }
+  }
+}
+
+# Terraform >= 0.12
+resource "aws_vpc" "need to figure this value out as it is not known until after run" {
+  vpc_id = data.terraform_remote_state.vpc.outputs.vpc_id # getting error on this line
+}
+
 
 ```
 
