@@ -32,6 +32,6 @@ resource "tfe_notification_configuration" "tfe-deploy" {
   enabled                   = true
   destination_type          = "slack"
   triggers                  = ["run:created", "run:planning", "run:needs_attention", "run:applying", "run:completed", "run:errored"]
-  url                       = "https://hooks.slack.com/services/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
+  url                       = "https://hooks.slack.com/services/SOME/SECURE/STRING/do_not_commit_to_vcs
   workspace_external_id     = "${tfe_workspace.test.external_id}"
 }

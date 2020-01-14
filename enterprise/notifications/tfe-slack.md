@@ -37,3 +37,4 @@ _notifications are configured per workspace_
 
 - a test message will be sent to your channel _Verification of <your TFE notification name>_
 
+**note** treat your Slack webhook as a secret

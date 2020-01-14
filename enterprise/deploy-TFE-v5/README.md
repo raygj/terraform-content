@@ -30,6 +30,8 @@ https://www.terraform.io/docs/enterprise/install/cluster-aws.html
 
 https://github.com/rberlind/private-terraform-enterprise/tree/automated-aws-pes-installation
 
+source for Stage 1 TF code used for prerequisite configuration, forked, and upgraded to TF 0.12
+
 ## Prepare TFC
 
 ### Publish the TFE Module in your PMR
@@ -56,14 +58,16 @@ Two stages will be used to deploy TFE because there are dependencies that must b
 
 - using Roger Berlind's code for a "public network" deployment forked into this repo to create the VPC, subnets, other network resources, security group, KMS key, and TFE source bucket (where TFE license file will reside)
 
-
 1. create a TFC workspace called `tfe_deploy-stage1-demo-us-east`
 
 - update VCS connection settings to the location of this forked repo, for example, my workspace is mounted at the repo path `https://github.com/raygj/terraform-content` and the working directory of the workspace is `/enterprise/deploy-TFE-v5/stage1`
 
 ![screenshot](/images/tfe-v5-deploy-stage1-workspace2.png)
 
-**note** make sure your AMI value in Stage 2 matches an available AMI in your default region
+**notes**
+
+- make sure your AMI value in Stage 2 matches an available AMI in your default region
+- WIP, TF CLI (OSS) code to configure the workspace in TFC started [HERE](https://github.com/raygj/terraform-content/tree/master/enterprise/tfe-provider-workspace-code)
 
 2. using `...deploy-TFE-v5/stage1/network.tfvars` as a reference, configure Terraform Variables for the workspace as follows:
 
