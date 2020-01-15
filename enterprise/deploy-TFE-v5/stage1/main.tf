@@ -25,8 +25,28 @@ module "new_vpc" {
 }
 
 resource "aws_route53_zone" "new" {
-  count = var.domain_name == "" ? 0 : 1
-  name  = var.domain_name
-  tags  = local.tags
+  name = "${var.prefix}.${var.domain_name}"
+  tags = local.tags
 }
 
+output "vpc_id" {
+  value       = module.new_vpc.vpc_id
+  description = "The id of the created VPC"
+}
+
+output "route53" {
+  value = aws_route53_zone.new.name
+}
+
+output "subnet_tags" {
+  value       = local.tags
+  description = "The tags associated with the subnets created"
+}
+
+output "kms_id" {
+  value = aws_kms_key.s3.key_id
+}
+
+output "bucket_name" {
+  value = aws_s3_bucket.bucket.bucket
+}

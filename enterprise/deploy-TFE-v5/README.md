@@ -1,6 +1,6 @@
 # TFE v5 Clustered Deployment on AWS using TFC
 
-The goal of this walkthrough is step through the process of deploying TFE v5 clustered architecture from a workspace running on TFC SaaS. Why? TFC offers security (Sentinel policy, secure variables) and collaboration (PMR, notifications) tooling to support this type of automated installation and it will be convenient to deploy a TFE instance at will on AWS from a workspace.
+The goal of this walkthrough is step through the process of deploying TFE v5 clustered architecture from a workspace running on TFC SaaS. Why? TFC offers security (Sentinel policy, secure variables) and collaboration (PMR, notifications) tooling to support this type of automated installation and it will be convenient to deploy a TFE instance at will.
 
 **NOTE** when referring to published guides or docs, these will be labeled as "official" versus docs that were created by HashiCorp field SEs that may not be officially supported by HashiCorp Support.
 
@@ -26,21 +26,50 @@ https://www.terraform.io/docs/enterprise/install/cluster-aws.html
 4. Write a Terraform configuration that calls the deployment module.
 5. Apply the configuration to deploy the cluster.
 
-### Roger Berlind's TFE v4 Code
-
-https://github.com/rberlind/private-terraform-enterprise/tree/automated-aws-pes-installation
-
-source for Stage 1 TF code used for prerequisite configuration, forked, and upgraded to TF 0.12
-
 ## Prepare TFC
 
-### Publish the TFE Module in your PMR
+### Publish the TFE and VPC Module in your PMR
 
-- fork the HashiCorp Official Module to your private GitHub account
+- fork the HashiCorp Official TFE Module to your private GitHub account
 
 https://github.com/hashicorp/terraform-aws-terraform-enterprise
 
-- publish the module in your PMR
+- for the AWS VPC module  to your private GitHub account
+
+https://registry.terraform.io/modules/terraform-aws-modules/vpc/aws
+
+- publish the modules in your PMR
+
+### Bootstrap Code
+
+Forked TF code used to bootstrap AWS with VPC, network, bucket for license file, and more
+
+https://github.com/raygj/terraform-content/tree/master/enterprise/deploy-TFE-v5/stage1
+
+- Reference ([original source](https://github.com/hashicorp/private-terraform-enterprise/tree/master/examples/bootstrap-aws)) for VPC code and bucket configuration (Roger Berlind's original [v4 deployment](https://github.com/rberlind/private-terraform-enterprise/tree/automated-aws-pes-installation))
+
+## Terraform CLI Dry Run
+
+_before migrating code to TFC, execute a dry run to ensure code and variables are functional_
+
+### Stage 1
+
+1. clone the [repo](https://github.com/raygj/terraform-content/), navigated to `.../terraform-content/enterprise/deploy-TFE-v5/stage1`
+2. set values of `variables.tf` to reflect your environment and decisions
+3. set value of module source in `main.tf` to point to your PMR, e.g., `source = "app.terraform.io/jray-hashi/vpc/aws"`
+3. run `terraform plan` and validate names and other values are correct
+4. move on to Stage 2 or run `terraform apply` now
+
+### Stage 2
+
+1. clone the [repo](https://github.com/raygj/terraform-content/), navigated to `.../terraform-content/enterprise/deploy-TFE-v5/stage2`
+2. set values of `variables.tf` to reflect your environment and decisions
+3. set value of module source in `main.tf` to point to your PMR, e.g., `source = "app.terraform.io/jray-hashi/terraform-enterprise/aws"`
+3. run `terraform plan` and validate names and other values are correct
+
+
+
+
 
 ## Deploy TFE
 
@@ -93,87 +122,51 @@ Two stages will be used to deploy TFE because there are dependencies that must b
 
 ### Terraform Code: Stage 2
 
-- goal is to use remote state to access Stage 1 workspace to collect the VPC ID and other resources as needed
+- goal is to use the data source "terraform_remote_state" to fetch the VPC ID of the VPC provisioned in the Stage 1 workspace
+
+- references:
 
 https://www.terraform.io/docs/providers/terraform/index.html
 
+https://www.terraform.io/docs/providers/terraform/d/remote_state.html
+
+- remote-state data sources in TFC/TFE use the security context/creds of the user executing the run to access remote workspace outputs
+
+**note** ^^ this is not documented, need to verify and test :-)
+
 https://www.terraform.io/docs/cloud/run/index.html#cross-workspace-state-access
 
-example
+- cross-workspace-state-access using TF CLI, a CLI [credential file](https://www.terraform.io/docs/commands/cli-config.html) must be present
+
+- the `variables.tf` or TFC Terraform variables value will include the HCL to configure the "terraform_remote_state"
 
 ```
-
-# Shared infrastructure state stored in Atlas
-data "terraform_remote_state" "vpc" {
-  backend = "remote"
-
-  config {
-    organization = "hashicorp"
-    workspaces = {
-      name = "vpc-prod"
-    }
-  }
-}
-
-# Terraform >= 0.12
-resource "aws_instance" "foo" {
-  # ...
-  subnet_id = data.terraform_remote_state.vpc.outputs.subnet_id
-}
-
-```
-
-#### main.tf
-
-**WIP note** need to make sure all this code is TF 0.12 compliant
-
-
-```
-
-provider "aws" {
-  region = "${var.aws_region}"
-}
-
-module "terraform-enterprise" {
-  source  = "app.terraform.io/jray-hashi/terraform-enterprise/aws"
-  version = "0.1.2"
-}
-
-vpc_id       = "data.terraform_remote_state.vpc.outputs.vpc_id"
-domain       = "example.com"
-license_file = "company.rli"
-
-output "deploy-tfe" { # need to update output name - check downstream dependencies
-  value = {
-    application_endpoint         = "${module.tfe-cluster.application_endpoint}"
-    application_health_check     = "${module.tfe-cluster.application_health_check}"
-    iam_role                     = "${module.tfe-cluster.iam_role}"
-    install_id                   = "${module.tfe-cluster.install_id}"
-    installer_dashboard_password = "${module.tfe-cluster.installer_dashboard_password}"
-    installer_dashboard_url      = "${module.tfe-cluster.installer_dashboard_url}"
-    primary_public_ip            = "${module.tfe-cluster.primary_public_ip}"
-    ssh_private_key              = "${module.tfe-cluster.ssh_private_key}"
-  }
-}
 
 # gather infra values from Stage 1 state stored in TFC
 
 data "terraform_remote_state" "vpc" {
   backend = "remote"
-
   config {
-    organization = "${var.org-name}"
+    organization = "jray-hashi"
     workspaces = {
-      name = "${var.tfe-deploy-workspace-name}"
+      name = "tfe_deploy-stage1-demo-us-east"
     }
   }
 }
 
-# Terraform >= 0.12
-resource "aws_vpc" "need to figure this value out as it is not known until after run" {
-  vpc_id = data.terraform_remote_state.vpc.outputs.vpc_id # getting error on this line
-}
+```
+
+- the `main.tf` code will include a reference to the variable
+
+```
+
+vpc_id = data.terraform_remote_state.vpc.outputs.vpc_id
 
 
 ```
+
+**WIP note** need to make sure all this code is TF 0.12 compliant
+
+
+
 

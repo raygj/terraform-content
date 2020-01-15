@@ -3,7 +3,7 @@ resource "aws_kms_key" "s3" {
   deletion_window_in_days = 10
 
   tags = {
-    name = "tfe-s3-bucket-key"
+    name = "${var.prefix}-bucket-key"
   }
 }
 
@@ -13,7 +13,7 @@ resource "aws_kms_alias" "s3" {
 }
 
 resource "aws_s3_bucket" "bucket" {
-  bucket = "var.bucket_name"
+  bucket = "${var.prefix}-bucket"
   acl    = "private"
 
   server_side_encryption_configuration {
@@ -30,7 +30,6 @@ resource "aws_s3_bucket" "bucket" {
   }
 
   tags = {
-    Name = "var.bucket_name"
+    Name = "${var.prefix}-bucket"
   }
 }
-

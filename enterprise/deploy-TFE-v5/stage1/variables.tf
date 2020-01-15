@@ -34,12 +34,12 @@ variable "availability_zones" {
 
 variable "domain_name" {
   description = "The domain to create a route53 zone for. (eg. `tfe.example.com`), will not create if left empty."
-  default     = ""
+  default     = "hashidemos.io"
 }
 
 variable "prefix" {
   description = "The prefix to use on all resources, will generate one if not set."
-  default     = ""
+  default     = "jray-tfe"
 }
 
 variable "namespace" {

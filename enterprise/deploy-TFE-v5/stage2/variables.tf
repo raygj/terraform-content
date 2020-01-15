@@ -1,11 +1,19 @@
-# gather infra values from Stage 1 state stored in TFC
+variable "aws_region" {
+  description = "define target AWS region"
+  default     = "us-east-2"
+}
 
-data "terraform_remote_state" "vpc" {
-  backend = "remote"
-  config {
-    organization = "jray-hashi"
-    workspaces = {
-      name = "tfe_deploy-stage1-demo-us-east"
-    }
-  }
+variable "domain_name" {
+  description = "FQDN of TFE instance"
+  default     = "jray-tfe.hashidemos.io"
+}
+
+variable "license_file_path" {
+  description = "local path to TFE license file"
+  default     = "/Users/jray/hashi/terraform/tfe-lic"
+}
+
+variable "vpc_id" {
+  description = "VPC ID of an existing VPC or the one built in Stage 1"
+  default     = ""
 }

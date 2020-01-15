@@ -1,17 +1,18 @@
 provider "aws" {
-  region = "${var.aws_region}"
+  region = "var.aws_region"
 }
 
-module "terraform-enterprise" {
+module "tfe-cluster" {
   source  = "app.terraform.io/jray-hashi/terraform-enterprise/aws"
   version = "0.1.2"
+
+  domain       = "var.domain_name"
+  license_file = "var.license_file_path"
+  vpc_id       = "var.vpc_id"
+
 }
 
-vpc_id = data.terraform_remote_state.vpc.outputs.vpc_id
-domain       = "example.com"
-license_file = "company.rli"
-
-output "deploy-tfe" { # need to update output name - check downstream dependencies
+output "tfe-cluster" {
   value = {
     application_endpoint         = "${module.tfe-cluster.application_endpoint}"
     application_health_check     = "${module.tfe-cluster.application_health_check}"
@@ -21,5 +22,6 @@ output "deploy-tfe" { # need to update output name - check downstream dependenci
     installer_dashboard_url      = "${module.tfe-cluster.installer_dashboard_url}"
     primary_public_ip            = "${module.tfe-cluster.primary_public_ip}"
     ssh_private_key              = "${module.tfe-cluster.ssh_private_key}"
+    ssh_config_file              = "${module.tfe-cluster.ssh_config_file}"
   }
 }
