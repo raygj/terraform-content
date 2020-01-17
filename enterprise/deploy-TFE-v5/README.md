@@ -1,6 +1,6 @@
-# TFE v5 Clustered Deployment on AWS using TFC
+# TFE v5 Clustered Deployment on AWS using TF CLI
 
-The goal of this walkthrough is step through the process of deploying TFE v5 clustered architecture from a workspace running on TFC SaaS. Why? TFC offers security (Sentinel policy, secure variables) and collaboration (PMR, notifications) tooling to support this type of automated installation and it will be convenient to deploy a TFE instance at will.
+The goal of this guide is to walkthrough, step by step, a deployment of TFE v5 clustered on AWS using TF OSS and eventually TFC-hosted workspaces.
 
 **NOTE** when referring to published guides or docs, these will be labeled as "official" versus docs that were created by HashiCorp field SEs that may not be officially supported by HashiCorp Support.
 
@@ -26,20 +26,6 @@ https://www.terraform.io/docs/enterprise/install/cluster-aws.html
 4. Write a Terraform configuration that calls the deployment module.
 5. Apply the configuration to deploy the cluster.
 
-## Prepare TFC
-
-### Publish the TFE and VPC Module in your PMR
-
-- fork the HashiCorp Official TFE Module to your private GitHub account
-
-https://github.com/hashicorp/terraform-aws-terraform-enterprise
-
-- for the AWS VPC module  to your private GitHub account
-
-https://registry.terraform.io/modules/terraform-aws-modules/vpc/aws
-
-- publish the modules in your PMR
-
 ### Bootstrap Code
 
 Forked TF code used to bootstrap AWS with VPC, network, bucket for license file, and more
@@ -54,6 +40,18 @@ _before migrating code to TFC, execute a dry run to ensure code and variables ar
 
 ### Stage 1
 
+Goal of Stage 1 code is to provide these perquisites required in Stage 2 (the TFE module):
+
+* VPC
+* Subnets (both public and private) spread across multiple AZs
+* A DNS Zone
+* A Certificate available in ACM for the hostname provided (or a wildcard certificate for the domain)
+* A license file provided by your Technical Account Manager
+
+[code is stored here](https://github.com/raygj/terraform-content/tree/master/enterprise/deploy-TFE-v5/stage1)
+
+#### Steps
+
 1. clone the [repo](https://github.com/raygj/terraform-content/), navigated to `.../terraform-content/enterprise/deploy-TFE-v5/stage1`
 2. set values of `variables.tf` to reflect your environment and decisions
 3. set value of module source in `main.tf` to point to your PMR, e.g., `source = "app.terraform.io/jray-hashi/vpc/aws"`
@@ -62,14 +60,39 @@ _before migrating code to TFC, execute a dry run to ensure code and variables ar
 
 ### Stage 2
 
+[code is stored here](https://github.com/raygj/terraform-content/tree/master/enterprise/deploy-TFE-v5/stage2)
+
+#### Steps
+
 1. clone the [repo](https://github.com/raygj/terraform-content/), navigated to `.../terraform-content/enterprise/deploy-TFE-v5/stage2`
 2. set values of `variables.tf` to reflect your environment and decisions
 3. set value of module source in `main.tf` to point to your PMR, e.g., `source = "app.terraform.io/jray-hashi/terraform-enterprise/aws"`
 3. run `terraform plan` and validate names and other values are correct
 
+# general notes
 
+1. doc say's tf0.11 must be used, but TFE module has been upgraded to tf0.12 - but not completely clean
+2. example bootstrap code is not tf0.12 compliant
+3. sample TFE code is not tf0.12 compliant
+4. a complete example of bootstrap and tfe module code (and supporting variable files, etc.) would be very helpful
 
+# Appendix 1: TFE v5 Clustered Deployment on AWS using TFC
 
+Building off the main walkthrough, the goal of this appendix is to step through the process of deploying TFE v5 clustered architecture from a workspaces running on TFC SaaS. Why? TFC offers security (Sentinel policy, secure variables) and collaboration (PMR, notifications) tooling to support this type of automated installation and it will be convenient to deploy a TFE instance at will.
+
+## Prepare TFC
+
+### Publish the TFE and VPC Module in your PMR
+
+- fork the HashiCorp Official TFE Module to your private GitHub account
+
+https://github.com/hashicorp/terraform-aws-terraform-enterprise
+
+- for the AWS VPC module  to your private GitHub account
+
+https://registry.terraform.io/modules/terraform-aws-modules/vpc/aws
+
+- publish the modules in your PMR
 
 ## Deploy TFE
 
@@ -166,7 +189,3 @@ vpc_id = data.terraform_remote_state.vpc.outputs.vpc_id
 ```
 
 **WIP note** need to make sure all this code is TF 0.12 compliant
-
-
-
-
