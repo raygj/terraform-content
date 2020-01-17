@@ -1,10 +1,10 @@
 provider "aws" {
-  region = "var.aws_region"
+  region = "us-east-2"
 }
 
 module "tfe-cluster" {
   source  = "app.terraform.io/jray-hashi/terraform-enterprise/aws"
-  version = "0.1.2"
+  version = "0.1.3"
 
   domain       = "var.domain_name"
   license_file = "var.license_file_path"
@@ -25,3 +25,4 @@ output "tfe-cluster" {
     ssh_config_file              = "${module.tfe-cluster.ssh_config_file}"
   }
 }
+

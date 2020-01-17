@@ -1,7 +1,7 @@
-variable "aws_region" {
-  description = "define target AWS region"
-  default     = "us-east-2"
-}
+#variable "aws_region" {
+#  description = "define target AWS region"
+#  default     = "us-east-2"
+#}
 
 variable "domain_name" {
   description = "FQDN of TFE instance"

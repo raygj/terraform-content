@@ -37,4 +37,8 @@ _notifications are configured per workspace_
 
 - a test message will be sent to your channel _Verification of <your TFE notification name>_
 
+- test using curl to verify Slack webhook is working, independent of TFE
+
+`curl -X POST -H 'Content-type: application/json' --data '{"text":"Hello, World!"}' https://hooks.slack.com/services/<your unique and secure webhook>`
+
 **note** treat your Slack webhook as a secret
