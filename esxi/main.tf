@@ -1,8 +1,8 @@
 provider "esxi" {
-  esxi_hostname = "192.168.1.228"
+  esxi_hostname = "${var.host}"
   esxi_hostport = "22"
   esxi_username = "root"
-  esxi_password = "<password>"    //look into pulling this from a var
+  esxi_password = "${var.admin_password}"
 }
 
 resource "esxi_guest" "homelab" {
@@ -11,7 +11,7 @@ resource "esxi_guest" "homelab" {
   memsize    = "${var.memsize}"
   numvcpus   = "4"
   power      = "on"
-  notes      = "hashistack node ${var.guest_number}"
+  notes      = "consul minikube node ${var.guest_number}"
 
   #
   #  Specify an existing guest to clone, an ovf source, or neither to build a bare-metal guest vm.
@@ -25,13 +25,22 @@ resource "esxi_guest" "homelab" {
       nic_type        = "vmxnet3"
     },
   ]
-  provisioner "file" {
-    source      = "/templates/hashistack_setup.sh"
-    destination = "/tmp/hashistack_setup.sh"
+}
+
+provisioner "file" {
+  source      = "/templates/bootstrap.sh"
+  destination = "/tmp/bootstrap.sh"
+
+  connection {
+    type        = "ssh"
+    user        = "jray"
+    private_key = "${var.private_key}"
+    host        = "esxi_guest.homelab.ipaddress" // not sure ipaddress is correct here
   }
+
   provisioner "remote-exec" {
     inline = [
-      "chmod +x /tmp/hashistack_setup.sh",
+      "chmod +x /tmp/bootstrap.sh",
       "./tmp/hashistack_setup.sh",
     ]
   }

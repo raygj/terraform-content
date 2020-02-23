@@ -16,6 +16,20 @@ variable "guest_number" {
 }
 
 variable "os" {
-  description = "centos or ubuntu, used to pick template"
+  description = "centos7 or ubuntu, used to pick template"
   default     = "ubuntu"
+}
+
+variable "private_key" {
+  description = "path to SSH key that Terraform remote-exec should use"
+  default     = "~/.ssh/id_rsa"
+}
+
+variable "admin_password" {
+  description = "password for ESXi root user"
+}
+
+variable "host" {
+  description = "ESXi host address"
+  default     = "192.168.1.228"
 }
