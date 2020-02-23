@@ -24,13 +24,17 @@ _use a single source repo for multiple workspaces; environments are set using va
 
 # Overview
 
+```
 workspace: aws-network-prod
 |- repo: aws-networking
  - vars: prod
+```
 
+```
  workspace: aws-network-stage
  |- repo: aws-networking
   - vars: stage
+```
 
 ## steps
 
