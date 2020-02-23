@@ -7,7 +7,7 @@ Goal: provide examples of Terraform Cloud (TFC) Terraform Enterprise (TFE) Works
 - Terraform Cloud Documentation [HERE](https://www.terraform.io/docs/cloud/workspaces/repo-structure.html)
 - each repository containing Terraform code should be a manageable chunk of infrastructure
 - when repositories are interrelated, we recommend using remote state to transfer information between workspaces
-- use `tfe_variable` resource of the [TFC provider](https://www.terraform.io/docs/providers/tfe/r/variable.html) or these [Variable Scripts])(https://github.com/hashicorp/terraform-guides/tree/master/operations/variable-scripts) to set variables and minimize manual effort
+- use `tfe_variable` resource of the [TFC provider](https://www.terraform.io/docs/providers/tfe/r/variable.html) or these [Variable Scripts](https://github.com/hashicorp/terraform-guides/tree/master/operations/variable-scripts) to set variables and minimize manual effort
 
 ### Three Approaches
 
