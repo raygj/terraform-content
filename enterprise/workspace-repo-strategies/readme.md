@@ -43,5 +43,3 @@ workspace: aws-network-prod
   3. set variables for prod
   4. create workspace `aws-networking-stage`
   5. set variables for stage
-
-# Branches
