@@ -1,19 +1,49 @@
-tfc_hostname
+variable "tfc_hostname" {
+  description = "FQDN of TFC/E host"
+  default = ""
+}
 
-tfc_token
+variable "tfc_token" {
+  description = "secret API token for a user with access to org"
+  default = "" //can be set as ENV var, in TFC it will be marked sensitive
+}
 
-tfc_org_name
+variable "tfc_org_name" {
+  description = "target organization name"
+  default = ""
+}
 
-email
+variable "email" {
+  description = "email address associated with token, process, or workflow"
+  default = ""
+}
 
-key1
+variable "key1" {
+  description = "target organization name"
+  default = ""
+}
 
-value1
+variable "value1" {
+  description = "target organization name"
+  default = ""
+}
 
-key2
+variable "key2" {
+  description = "target organization name"
+  default = ""
+}
 
-value2
+variable "value2" {
+  description = "target organization name"
+  default = ""
+}
 
-env_key1
+variable "env_key1" {
+  description = "sets key1 of env vars"
+  default = "CONFIRM_DESTROY"
+}
 
-env_value1
+variable "env_value1" {
+  description = "sets value1 to key1"
+  default = "1"
+}

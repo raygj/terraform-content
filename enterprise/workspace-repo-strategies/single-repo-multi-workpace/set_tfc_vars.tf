@@ -13,7 +13,7 @@ resource "tfc_workspace" "aws-networking" {
   name         = var.workspace_name
   organization = tfc_organization.acme-corp.id
 }
-# sample terraform variable
+# sample terraform variable //look into storing on Consul kv
 resource "tfc_variable" "aws-networking" {
 workspace_id = "${tfc_workspace.aws-networking.id}"
 description  = "a useful description"

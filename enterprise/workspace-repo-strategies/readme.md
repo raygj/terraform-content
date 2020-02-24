@@ -2,6 +2,8 @@
 
 Goal: provide examples of Terraform Cloud (TFC) Terraform Enterprise (TFE) Workspace and Git Repo strategies as recommend by HashiCorp TFC documentation. This guide will walk through the most-common approach (single repo, multi-workspace).
 
+Terraform Cloud (TFC) is the name of the platform; TFC is available in a SaaS multi-tenant solution or as TFE in a self-hosted deployment. In this guide, TFC will be used for ease, but assume that all instruction applies to TFE.
+
 ## overall strategies
 
 - Terraform Cloud Documentation [HERE](https://www.terraform.io/docs/cloud/workspaces/repo-structure.html)
@@ -43,3 +45,10 @@ workspace: aws-network-prod
   3. set variables for prod
   4. create workspace `aws-networking-stage`
   5. set variables for stage
+
+### step 1: create repo
+
+- create a repo for your code, in this case `aws-networking`
+- analyze the required variables for the code
+
+### step 3: create TFC workspace
