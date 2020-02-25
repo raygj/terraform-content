@@ -1,6 +1,6 @@
 # TFC|E Workspace and Repo Strategies
 
-Goal: provide examples of Terraform Cloud (TFC) Terraform Enterprise (TFE) Workspace and Git Repo strategies as recommend by HashiCorp TFC documentation. This guide will walk through the most-common approach (single repo, multi-workspace).
+Goal: provide examples of Terraform Cloud (TFC) Terraform Enterprise (TFE) Workspace and Git Repo strategies as recommend by HashiCorp TFC documentation. This guide will walk through the most-common approach (single repo, multi-workspace), access resources across workspaces (Remote State), and Run Triggers to create an infrastructure pipeline.
 
 Terraform Cloud (TFC) is the name of the platform; TFC is available in a SaaS multi-tenant solution or as TFE in a self-hosted deployment. In this guide, TFC will be used for ease, but assume that all instruction applies to TFE.
 
@@ -11,7 +11,7 @@ Terraform Cloud (TFC) is the name of the platform; TFC is available in a SaaS mu
 - when repositories are interrelated, we recommend using remote state to transfer information between workspaces
 - use `tfe_variable` resource of the [TFC provider](https://www.terraform.io/docs/providers/tfe/r/variable.html) or these [Variable Scripts](https://github.com/hashicorp/terraform-guides/tree/master/operations/variable-scripts) to set variables and minimize manual effort
 
-### Three Approaches
+### Workspace-Rep Organization: Three Approaches
 
 - Multiple Workspaces per Repo
   - A single repo attached to multiple workspaces is the simplest best-practice approach
@@ -52,3 +52,9 @@ workspace: aws-network-prod
 - analyze the required variables for the code
 
 ### step 3: create TFC workspace
+
+# Remote State
+
+# Run Triggers
+
+# Conclusion
