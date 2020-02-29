@@ -19,22 +19,22 @@ variable "email" {
 }
 
 variable "key1" {
-  description = "target organization name"
+  description = "sets TF VAR key1 value aws_region"
   default = ""
 }
 
 variable "value1" {
-  description = "target organization name"
+  description = "sets TF VAR value1 value us-east-1"
   default = ""
 }
 
 variable "key2" {
-  description = "target organization name"
+  description = "sets TF VAR key1 value vpc_cidr"
   default = ""
 }
 
 variable "value2" {
-  description = "target organization name"
+  description = "sets TF VAR value2 value 172.100.0.0/16"
   default = ""
 }
 

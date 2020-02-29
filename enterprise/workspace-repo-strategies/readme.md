@@ -51,7 +51,55 @@ workspace: aws-network-prod
 - create a repo for your code, in this case `aws-networking`
 - analyze the required variables for the code
 
-### step 3: create TFC workspace
+### step 2: create TFC workspace
+
+### step 3: set variables for prod
+
+code is [HERE](https://github.com/raygj/terraform-content/blob/master/enterprise/workspace-repo-strategies/single-repo-multi-workpace/set_tfc_vars.tf)
+
+#### main.tf snippet
+
+```
+Configure the Terraform Enterprise Provider
+provider "tfe" {
+ hostname = "var.tfc_hostname
+ token    = var.tfc_token
+}
+
+resource "tfc_organization" "acme-corp" {
+ name  = var.tfc_org_name
+ email = var.email
+}
+
+resource "tfc_workspace" "aws-networking" {
+ name         = var.workspace_name
+ organization = tfc_organization.acme-corp.id
+}
+# sample terraform variable //look into storing on Consul kv
+resource "tfc_variable" "aws-networking" {
+workspace_id = "${tfc_workspace.aws-networking.id}"
+description  = "a useful description"
+ key          = var.key1
+ value        = var.value1
+ category     = terraform
+ sensitive    = false
+}
+```
+
+#### variables.tf snippet
+
+```
+variable "key1" {
+  description = "target organization name"
+  default = ""
+}
+
+variable "value1" {
+  description = "target organization name"
+  default = ""
+}
+```
+
 
 # Remote State
 

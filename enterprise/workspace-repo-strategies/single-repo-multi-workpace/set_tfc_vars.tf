@@ -1,3 +1,7 @@
+# Terraform 0.12 compliant
+terraform {
+  required_version = "< 0.12"
+
 # Configure the Terraform Enterprise Provider
 provider "tfe" {
   hostname = "var.tfc_hostname
