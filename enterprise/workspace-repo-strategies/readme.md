@@ -62,25 +62,23 @@ variable workspace: aws-networking-us-east-prod-set-vars
  |- repo: /aws-core-compute-us-east/aws-core-compute-us-east-stage-set-vars
 ```
 
-## steps
+# Steps
 
   1. create repo `aws-networking-us-east`
   2. create workspace `aws-networking-us-east-prod`
   3. set variables for prod
 
-  < repeat for networking-us-east-stage and then core-compute-us-east-prod and stage >
+  < repeat for _networking-us-east-stage_ and then _core-compute-us-east-prod|stage_ >
 
 ## step 1: create repo
 
-- create a repo for your code, in this case `aws-networking-us-east`
+- create a repo for your code (or clone the example code) in this case `aws-networking-us-east`
 - analyze the required variables for the code
 
-## step 2: create TFC workspace
+## step 2: create the TFC infra workspace
 
 - set name to `aws-networking-us-east-prod`
 - configure VCS repo connection to `aws-networking-us-east`
-
-![image](/images/workspace-repo-strat-workspaces.png)
 
 ## step 3: set variables for prod
 
@@ -102,6 +100,11 @@ variable workspace: aws-networking-us-east-prod-set-vars
                        /aws-networking-us-east-stage-set-vars
 
 ```
+- when you provision the workspace, set the Terraform Working Directory to the correct path
+- for example
+
+![image](/images/workspace-repo-strat-var-ws-settings.png)
+
 ### TFE provider main.tf snippet
 
 ```
@@ -145,6 +148,11 @@ variable "value1" {
 }
 ```
 
+## Complete Workspace Layout
+
+if you follow the outlined approach you will ned up with this workspace structure:
+
+![image](/images/workspace-repo-strat-workspaces.png)
 
 # Remote State
 
