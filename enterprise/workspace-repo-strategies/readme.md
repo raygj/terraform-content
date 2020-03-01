@@ -148,6 +148,10 @@ variable "value1" {
 }
 ```
 
+#### Sample Variable Workspace Variable Set
+
+![image](/images/workspace-repo-strat-var-ws-variables.png)
+
 ## Complete Workspace Layout
 
 if you follow the outlined approach you will ned up with this workspace structure:
