@@ -6,7 +6,7 @@ Provide examples of Terraform Cloud (TFC) Terraform Enterprise (TFE) Workspace a
 
 1. this guide will walk through the most-common approach (single repo, multi-workspace),
 2. demonstrate how to use [Cross-Workspace State Access](https://www.terraform.io/docs/cloud/workspaces/state.html#cross-workspace-state-access) to access resources in another workspace, and
-3. demo how to use [Run Triggers](https://www.terraform.io/docs/cloud/workspaces/run-triggers.html) to create an infrastructure pipeline.
+3. demonstrate how to use [Run Triggers](https://www.terraform.io/docs/cloud/workspaces/run-triggers.html) to create an infrastructure pipeline.
 
 **Reminder** Terraform Cloud (TFC) is the name of the platform; TFC is available in a SaaS multi-tenant solution or as TFE in a self-hosted deployment. In this guide, TFC will be used for ease, but assume that all instruction applies to TFE if you are running a self-hosted environment.
 
@@ -35,30 +35,30 @@ _use a single source repo for multiple workspaces; environments are set using va
 _this an example workspace and variable mapping strategy_
 
 ```
-workspace: aws-networking-us-east-prod
+infra workspace: aws-networking-us-east-prod
 |- repo: aws-networking-us-east
-variables: aws-networking-us-east-prod
+variable workspace: aws-networking-us-east-prod-set-vars
 |- repo: /aws-networking-us-east/aws-networking-us-east-prod-set-vars
 ```
 
 ```
- workspace: aws-networking-us-east-stage
+ infra workspace: aws-networking-us-east-stage
  |- repo: aws-networking-us-east
- variables: aws-networking-us-east-stage
+ variable workspace: aws-networking-us-east-stage
  |- repo: /aws-networking-us-east/aws-networking-us-east-stage-set-vars
 ```
 
 ```
- workspace: aws-core-compute-us-east-prod
+ infra workspace:  aws-core-compute-us-east-prod
  |- repo: aws-core-compute-us-east
- variables: aws-core-compute-us-east-prod
+ variable workspace: aws-core-compute-us-east-prod
  |- repo: /aws-core-compute-us-east/aws-core-compute-us-east-prod-set-vars
 ```
 
 ```
- workspace: aws-core-compute-us-east-stage
+ infra workspace: aws-core-compute-us-east-stage
  |- repo: aws-core-compute-us-east
- variables: aws-core-compute-us-east-stage
+ variable workspace: aws-core-compute-us-east-stage
  |- repo: /aws-core-compute-us-east/aws-core-compute-us-east-stage-set-vars
 ```
 
@@ -67,6 +67,8 @@ variables: aws-networking-us-east-prod
   1. create repo `aws-networking-us-east`
   2. create workspace `aws-networking-us-east-prod`
   3. set variables for prod
+
+  < repeat for networking-us-east-stage and then core-compute-us-east-prod and stage >
 
 ## step 1: create repo
 
@@ -85,7 +87,7 @@ variables: aws-networking-us-east-prod
 - there are a number of options on how to set variables in TFC;
 
 1. you could set them manually in the UI,
-2. use an API call [such as](https://github.com/hashicorp/terraform-guides/tree/master/operations/variable-scripts),
+2. use an API call [such as this example](https://github.com/hashicorp/terraform-guides/tree/master/operations/variable-scripts),
 3. use TF CLI and the Terraform Enterprise provider,
 4. use `*auto.tfvars` file to have TFC automatically pull variables in, note, the values will never be visible in the workspace variables UI
 5. use workspaces in TFC itself along with the Terraform Enterprise provider to create a reliable source for each environment (i.e, prod, stage, dev) with dedicated repos or long-running  branches within a single repo.
