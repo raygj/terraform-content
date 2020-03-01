@@ -160,6 +160,38 @@ if you follow the outlined approach you will ned up with this workspace structur
 
 # Remote State
 
+remote_state is a Terraform data source. review the [documentation](https://www.terraform.io/docs/providers/terraform/d/remote_state.html) for details.
+
+in this walkthrough, the network and core infra workspaces are separated to avoid operational complexity (multi-speed changes, separation of duties, application of policy guardrails), `remote_state` is used to access data from one workspace (core compute) to another (networking).
+
+keep in mind that only outputs from the root module are supported, so you will need to thread the module output into the root module if you would like to access outputs from a nested module.
+
+## Pull Network Values
+
+- this code resides in the `core compute` along side the EC2 code
+
+
+```
+data "terraform_remote_state" "vpc" {
+  backend = "remote"
+
+  config = {
+    organization = "hashicorp"
+    workspaces = {
+      name = "vpc-prod"
+    }
+  }
+}
+```
+
+```
+# Terraform >= 0.12
+resource "aws_instance" "foo" {
+  # ...
+  subnet_id = data.terraform_remote_state.vpc.outputs.subnet_id
+}
+```
+
 # Run Triggers
 
 # Conclusion
