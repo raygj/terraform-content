@@ -38,33 +38,29 @@ _this an example workspace and variable mapping strategy_
 workspace: aws-networking-us-east-prod
 |- repo: aws-networking-us-east
 variables: aws-networking-us-east-prod
-|- repo: aws-networking-us-east-prod-set-vars
+|- repo: /aws-networking-us-east/aws-networking-us-east-prod-set-vars
 ```
 
 ```
  workspace: aws-networking-us-east-stage
  |- repo: aws-networking-us-east
  variables: aws-networking-us-east-stage
- |- repo: aws-networking-us-east-stage-set-vars
+ |- repo: /aws-networking-us-east/aws-networking-us-east-stage-set-vars
 ```
 
 ```
  workspace: aws-core-compute-us-east-prod
  |- repo: aws-core-compute-us-east
  variables: aws-core-compute-us-east-prod
- |- repo: aws-core-compute-us-east-prod-set-vars
+ |- repo: /aws-core-compute-us-east/aws-core-compute-us-east-prod-set-vars
 ```
 
 ```
  workspace: aws-core-compute-us-east-stage
  |- repo: aws-core-compute-us-east
  variables: aws-core-compute-us-east-stage
- |- repo: aws-core-compute-us-east-stage-set-vars
+ |- repo: /aws-core-compute-us-east/aws-core-compute-us-east-stage-set-vars
 ```
-
-### complete workspace view
-
-![image](/images/workspace-repo-strat-workspaces.png)
 
 ## steps
 
@@ -79,7 +75,7 @@ variables: aws-networking-us-east-prod
 
 ## step 2: create TFC workspace
 
-- set name to `aws-networking-prod`
+- set name to `aws-networking-us-east-prod`
 - configure VCS repo connection to `aws-networking-us-east`
 
 ![image](/images/workspace-repo-strat-workspaces.png)
@@ -91,13 +87,20 @@ variables: aws-networking-us-east-prod
 1. you could set them manually in the UI,
 2. use an API call [such as](https://github.com/hashicorp/terraform-guides/tree/master/operations/variable-scripts),
 3. use TF CLI and the Terraform Enterprise provider,
-4. use workspaces in TFC itself along with the Terraform Enterprise provider to create a reliable source for each environment (i.e, prod, stage, dev) with dedicated repos or long-running  branches within a single repo.
+4. use `*auto.tfvars` file to have TFC automatically pull variables in, note, the values will never be visible in the workspace variables UI
+5. use workspaces in TFC itself along with the Terraform Enterprise provider to create a reliable source for each environment (i.e, prod, stage, dev) with dedicated repos or long-running  branches within a single repo.
 
-- for this walkthrough, dedicated workspaces will be used to support the Terraform Provider code for each environment (prod and stage); both are stored in this [repo](https://github.com/raygj/terraform-content/tree/master/enterprise/workspace-repo-strategies)
+- for this walkthrough option 5 will be used; dedicated workspaces will be created to host the Terraform Provider code that will set the variables for each environment's workspace (prod and stage)
+- the TF code for each environment will reside in a sub-directory within the resource's repo
+- for example:
 
-code is [HERE](https://github.com/raygj/terraform-content/blob/master/enterprise/workspace-repo-strategies/single-repo-multi-workpace/set_tfc_vars.tf)
+```
 
-### main.tf snippet
+/aws-networking-us-east/aws-networking-us-east-prod-set-vars
+                       /aws-networking-us-east-stage-set-vars
+
+```
+### TFE provider main.tf snippet
 
 ```
 Configure the Terraform Enterprise Provider
@@ -126,7 +129,7 @@ description  = "a useful description"
 }
 ```
 
-### variables.tf snippet
+### TFE provider variables.tf snippet
 
 ```
 variable "key1" {
