@@ -1,4 +1,4 @@
-# TFC|E Workspace and Repo Strategies
+formatting# TFC|E Workspace and Repo Strategies
 
 ## Goals
 
@@ -168,28 +168,60 @@ keep in mind that only outputs from the root module are supported, so you will n
 
 ## Pull Network Values
 
-- this code resides in the `core compute` along side the EC2 code
-
+- these data statements reside in the `aws-networking` code
+- TF 0.12 formatting
 
 ```
-data "terraform_remote_state" "vpc" {
+data "terraform_remote_state" "subnet_id" {
   backend = "remote"
 
   config = {
-    organization = "hashicorp"
+    organization = "jray-hashi"
     workspaces = {
-      name = "vpc-prod"
+      name = "aws-networking-us-east-prod"
     }
   }
 }
 ```
 
 ```
-# Terraform >= 0.12
-resource "aws_instance" "foo" {
-  # ...
-  subnet_id = data.terraform_remote_state.vpc.outputs.subnet_id
+data "terraform_remote_state" "vpc_security_group_ids" {
+  backend = "remote"
+
+  config = {
+    organization = "jray-hashi"
+    workspaces = {
+      name = "aws-networking-us-east-prod"
+    }
+  }
 }
+```
+```
+data "terraform_remote_state" "public_ip" {
+  backend = "remote"
+
+  config = {
+    organization = "jray-hashi"
+    workspaces = {
+      name = "aws-networking-us-east-prod"
+    }
+  }
+}
+```
+
+- these data references reside in the `core compute` along side the EC2 code
+- TF 0.12 formatting
+
+```
+  # ...
+  subnet_id                   = data.terraform_remote_state.subnet_id.outputs.subnet_id
+  vpc_security_group_ids      = [data.terraform_remote_state.vpc_security_group_ids.outputs.id]
+
+```
+  #...
+connection {
+  host        = "${data.terraform_remote_state.public_ip}"
+
 ```
 
 # Run Triggers
