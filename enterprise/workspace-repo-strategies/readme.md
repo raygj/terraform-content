@@ -218,6 +218,7 @@ data "terraform_remote_state" "public_ip" {
   vpc_security_group_ids      = [data.terraform_remote_state.vpc_security_group_ids.outputs.id]
 
 ```
+```
   #...
 connection {
   host        = "${data.terraform_remote_state.public_ip}"
