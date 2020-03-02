@@ -228,3 +228,18 @@ connection {
 # Run Triggers
 
 # Conclusion
+
+
+_________________________
+Next Steps 03.01
+
+Differentiate prod and stage by more than just the CDIR block. VPC needs to be named differently? Or is the IP address enough to make it unique in the same region?
+
+Make sure all code is 0.12 compliant, FMT and VALIDATE
+
+Finish EC2 remote_state code
+	* need to add “data” definition to variable code of network main.tf
+	* need to make sure data sources map to variable code
+
+Assumption is that any remote_state call from within TF code running in TFC will authenticate using “self”
+	* need to verify and add explanation to README
