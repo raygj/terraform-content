@@ -168,7 +168,10 @@ keep in mind that only outputs from the root module are supported, so you will n
 
 ## Pull Network Values
 
-- these data statements reside in the `aws-networking` code
+the process is to pull the values for the EC2 configuration of `aws-networking-us-east-prod` from the `aws-networking-us-east-prod` state residing in the workspace of the same name.
+
+- these data references reside in the `core compute` along side the EC2 code
+- define the data source, then reference it within the resource block as a `data` value
 - TF 0.12 formatting
 
 ```
@@ -182,9 +185,7 @@ data "terraform_remote_state" "subnet_id" {
     }
   }
 }
-```
 
-```
 data "terraform_remote_state" "vpc_security_group_ids" {
   backend = "remote"
 
@@ -195,8 +196,7 @@ data "terraform_remote_state" "vpc_security_group_ids" {
     }
   }
 }
-```
-```
+
 data "terraform_remote_state" "public_ip" {
   backend = "remote"
 
@@ -207,19 +207,12 @@ data "terraform_remote_state" "public_ip" {
     }
   }
 }
-```
 
-- these data references reside in the `core compute` along side the EC2 code
-- TF 0.12 formatting
-
-```
-  # ...
+# ...
   subnet_id                   = data.terraform_remote_state.subnet_id.outputs.subnet_id
   vpc_security_group_ids      = [data.terraform_remote_state.vpc_security_group_ids.outputs.id]
 
-```
-```
-  #...
+#...
 connection {
   host        = "${data.terraform_remote_state.public_ip}"
 
